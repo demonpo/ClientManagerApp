@@ -1,0 +1,74 @@
+import 'package:clientmanagerapp/Client/ui/screens/client_list_screen.dart';
+import 'Client/ui/screens/client_register_screen.dart';
+import 'file:///C:/Users/Demonpo/Github/client_manager_app/client_manager_app/lib/Client/ui/widgets/client_register_form.dart';
+import 'package:flutter/material.dart';
+
+class ClientManagerMainScreen extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return _ClientManagerMainScreen();
+  }
+
+}
+
+class _ClientManagerMainScreen extends State<ClientManagerMainScreen> {
+  int indexTap = 0;
+  final List<Widget> widgetsChildren = [
+    ClientListScreen(),
+    Container(),
+    Container(),
+  ];
+
+  void onTapTapped(int index){
+
+    setState(() {
+      indexTap = index;
+    });
+
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+
+
+    return Scaffold(
+      body: widgetsChildren[indexTap],
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          canvasColor: Color(0xff202225),
+          primaryColor: Color(0xff43b581),
+        ),
+        child: BottomNavigationBar(
+          onTap: onTapTapped,
+          currentIndex: indexTap,
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.people,
+                  //color: Color(0xff36393f)
+                ),
+                title: Text("")
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                      Icons.notifications,
+                      //color: Color(0xff36393f),
+                  ),
+                  title: Text("")
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.person,
+                      //color: Color(0xff36393f)
+                  ),
+                  title: Text("")
+              ),
+            ]
+        ),
+      ),
+    );
+  }
+
+}
