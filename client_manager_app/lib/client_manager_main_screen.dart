@@ -1,4 +1,6 @@
+import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
 import 'package:clientmanagerapp/Client/ui/screens/client_list_screen.dart';
+import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'Client/ui/screens/client_register_screen.dart';
 import 'file:///C:/Users/Demonpo/Github/client_manager_app/client_manager_app/lib/Client/ui/widgets/client_register_form.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +17,11 @@ class ClientManagerMainScreen extends StatefulWidget {
 class _ClientManagerMainScreen extends State<ClientManagerMainScreen> {
   int indexTap = 0;
   final List<Widget> widgetsChildren = [
-    ClientListScreen(),
+    BlocProvider(
+      bloc: ClientBloc(),
+      child: ClientListScreen(),
+    ),
+    //ClientListScreen(),
     Container(),
     Container(),
   ];

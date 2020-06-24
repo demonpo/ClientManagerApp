@@ -151,6 +151,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.3"
+  generic_bloc_provider:
+    dependency: "direct main"
+    description:
+      name: generic_bloc_provider
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.9"
   group_radio_button:
     dependency: transitive
     description:

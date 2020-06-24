@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:clientmanagerapp/Client/model/client.dart';
 import 'package:clientmanagerapp/Client/repository/client_repository.dart';
+import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 
-class ClientBloc {
+class ClientBloc extends Bloc{
   //Get instance of the Repository
   final _clientRepository = ClientRepository();
 
