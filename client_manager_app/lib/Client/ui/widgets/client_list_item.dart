@@ -22,16 +22,26 @@ class ClientListItem extends StatelessWidget{
       decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Color(0xff43b581),
-          image: hasPhoto ? DecorationImage(
-              fit: BoxFit.cover,
-              image: FileImage(File(client.photoPath)),
-          ) : null,
       ),
-      child: !hasPhoto ? Icon(
-        Icons.person,
-        color: Colors.white,
+      child: Stack(
+        children: <Widget>[
+          Center(
+            child: Icon(
+              Icons.person,
+              color: Colors.white,
+            ),
+          ),
+          hasPhoto ? Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: FileImage(File(client.photoPath)),
+              ),
+            ),
+          ) :  null,
+        ],
       )
-      : null,
     );
 
 
