@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class DarkImagePicker extends StatefulWidget{
+  File image;
   double height;
   double width;
   DarkImagePicker({@required this.height,@required this.width});
@@ -20,14 +21,14 @@ class DarkImagePicker extends StatefulWidget{
 
 
 class _DarkImagePickerState extends State<DarkImagePicker>{
-  File _image;
+
   final picker = ImagePicker();
 
   Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
 
     setState(() {
-      _image = File(pickedFile.path);
+      widget.image = File(pickedFile.path);
     });
   }
 
@@ -49,7 +50,7 @@ class _DarkImagePickerState extends State<DarkImagePicker>{
 
           image: DecorationImage(
             fit: BoxFit.cover,
-              image: _image == null ? AssetImage("assets/icons/user.png") : FileImage(_image),
+              image: widget.image == null ? AssetImage("assets/icons/user.png") : FileImage(widget.image),
           ),
         ),
       ),

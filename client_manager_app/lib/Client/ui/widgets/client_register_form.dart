@@ -23,6 +23,7 @@ class ClientRegisterForm extends StatefulWidget{
 }
 
 class _ClientRegisterForm extends State<ClientRegisterForm>{
+  final darkImagePicker = DarkImagePicker(height: 100, width: 100,);
   ClientBloc clientBloc;
   var data;
   bool autoValidate = true;
@@ -91,10 +92,7 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
                   autovalidate: true,
                   child: Column(
                     children: <Widget>[
-                      DarkImagePicker(
-                        height: 100,
-                        width: 100,
-                      ),
+                      darkImagePicker,
                       DarkTextFormInput(
                         attribute: "nombres",
                         hintText: "Ingrese Nombre",
@@ -165,7 +163,7 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
                         print(_fbKey.currentState.value);
                         print('validation OK');
                         clientBloc.addClient(Client(
-
+                          photoPath: darkImagePicker.image == null ? "" : darkImagePicker.image.path,
                           name: _fbKey.currentState.value['nombres'],
                           lastName: _fbKey.currentState.value['apellidos'],
                           email: _fbKey.currentState.value['email'],

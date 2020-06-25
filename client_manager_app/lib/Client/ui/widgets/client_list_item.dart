@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:clientmanagerapp/Client/model/client.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +10,8 @@ class ClientListItem extends StatelessWidget{
   ClientListItem({this.client, this.onLongPress});
   @override
   Widget build(BuildContext context) {
+    final hasPhoto = client.photoPath == "" ? false : true;
+
 
     final clientPhoto = Container(
       width: 50,
@@ -18,16 +22,16 @@ class ClientListItem extends StatelessWidget{
       decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Color(0xff43b581),
-          /*
-          image: DecorationImage(
+          image: hasPhoto ? DecorationImage(
               fit: BoxFit.cover,
-              //image: AssetImage(),
-          )*/
+              image: FileImage(File(client.photoPath)),
+          ) : null,
       ),
-      child: Icon(
+      child: !hasPhoto ? Icon(
         Icons.person,
         color: Colors.white,
-      ),
+      )
+      : null,
     );
 
 
