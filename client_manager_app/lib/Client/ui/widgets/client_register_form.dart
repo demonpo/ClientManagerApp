@@ -1,11 +1,14 @@
 import 'dart:io';
 
+import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
+import 'package:clientmanagerapp/Client/model/client.dart';
 import 'package:clientmanagerapp/Widgets/dark_dropdown_picker_form.dart';
 import 'package:clientmanagerapp/Widgets/dark_text_form_input.dart';
 import 'package:clientmanagerapp/Widgets/dark_time_picker_form.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:clientmanagerapp/Widgets/dark_image_picker.dart';
 
@@ -20,7 +23,7 @@ class ClientRegisterForm extends StatefulWidget{
 }
 
 class _ClientRegisterForm extends State<ClientRegisterForm>{
-
+  ClientBloc clientBloc;
   var data;
   bool autoValidate = true;
   bool readOnly = false;
@@ -32,6 +35,8 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
 
   @override
   Widget build(BuildContext context) {
+
+    clientBloc = BlocProvider.of<ClientBloc>(context);
 
 
     return Container(
@@ -142,24 +147,6 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
                     ],
                   ),
                 ),
-                Row(
-                  children: <Widget>[
-                    MaterialButton(
-                      child: Text("Submit"),
-                      onPressed: () {
-                        if (_fbKey.currentState.saveAndValidate()) {
-                          print(_fbKey.currentState.value);
-                        }
-                      },
-                    ),
-                    MaterialButton(
-                      child: Text("Reset"),
-                      onPressed: () {
-                        _fbKey.currentState.reset();
-                      },
-                    ),
-                  ],
-                )
               ],
             ),
             Row(
@@ -174,11 +161,23 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
                     onPressed: () {
                       if (_fbKey.currentState.saveAndValidate()) {
                         print(_fbKey
-                            .currentState.value['contact_person'].runtimeType);
+                            .currentState.value['nombres'].runtimeType);
                         print(_fbKey.currentState.value);
-                      } else {
+                        print('validation OK');
+                        clientBloc.addClient(Client(
+
+                          name: _fbKey.currentState.value['nombres'],
+                          lastName: _fbKey.currentState.value['apellidos'],
+                          email: _fbKey.currentState.value['email'],
+                          phoneNumber: _fbKey.currentState.value['phoneNumber'],
+                          gender: _fbKey.currentState.value['genero'],
+                          birthday: _fbKey.currentState.value['birthday'].toString(),
+                        ));
+                        Navigator.pop(context);
+                      }
+                      else {
                         print(_fbKey
-                            .currentState.value['contact_person'].runtimeType);
+                            .currentState.value['nombres'].runtimeType);
                         print(_fbKey.currentState.value);
                         print('validation failed');
                       }

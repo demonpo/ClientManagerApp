@@ -17,7 +17,7 @@ class DatabaseProvider {
     //"ReactiveTodo.db is our database instance name
     String path = join(documentsDirectory.path, "ReactiveClientManager.db");
     var database = await openDatabase(path,
-        version: 1, onCreate: initDB, onUpgrade: onUpgrade);
+        version: 2, onCreate: initDB, onUpgrade: onUpgrade);
     return database;
   }
   //This is optional, and only used for changing DB schema migrations
@@ -28,6 +28,7 @@ class DatabaseProvider {
     await database.execute("CREATE TABLE $clientTABLE ("
         "id INTEGER PRIMARY KEY, "
         "name TEXT, "
+        "photoPath TEXT, "
         "lastName TEXT, "
         "birthday TEXT, "
         "email TEXT, "

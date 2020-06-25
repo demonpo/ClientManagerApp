@@ -23,6 +23,7 @@ class ClientBloc extends Bloc{
   getClients({String query}) async {
     //sink is a way of adding data reactively to the stream
     //by registering a new event
+    print("GETCLIENTS");
     _clientController.sink.add(await _clientRepository.getAllClients(query: query));
   }
 
@@ -42,6 +43,7 @@ class ClientBloc extends Bloc{
   }
 
   dispose() {
-    _clientController.close();
+    print("dispose");
+    //_clientController.close();
   }
 }

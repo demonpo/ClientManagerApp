@@ -1,6 +1,11 @@
+import 'package:clientmanagerapp/Client/model/client.dart';
 import 'package:flutter/material.dart';
 
 class ClientListItem extends StatelessWidget{
+  Client client;
+  VoidCallback onLongPress;
+
+  ClientListItem({this.client, this.onLongPress});
   @override
   Widget build(BuildContext context) {
 
@@ -33,7 +38,7 @@ class ClientListItem extends StatelessWidget{
         children: <Widget>[
           //client Name
           Text(
-            "Dummy Name",
+            "${client.name} ${client.lastName}",
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -53,31 +58,34 @@ class ClientListItem extends StatelessWidget{
       ),
     );
 
-    return Container(
-      height: 80,
-      padding: EdgeInsets.only(
-        left: 15,
-        right: 15,
-      ),
-      margin: EdgeInsets.only(
-        top: 5,
-        left: 10,
-        right: 10,
-        bottom: 5,
-      ),
-      decoration: BoxDecoration(
-        color: Color(0xff36393f),
-        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-      ),
-      child: Row(
-        children: <Widget>[
-          clientPhoto,
-          clientDetails,
-        ],
+    return InkWell(
+      onLongPress: onLongPress,
+      child: Container(
+        height: 80,
+        padding: EdgeInsets.only(
+          left: 15,
+          right: 15,
+        ),
+        margin: EdgeInsets.only(
+          top: 5,
+          left: 10,
+          right: 10,
+          bottom: 5,
+        ),
+        decoration: BoxDecoration(
+          color: Color(0xff36393f),
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        ),
+        child: Row(
+          children: <Widget>[
+            clientPhoto,
+            clientDetails,
+          ],
 
 
-      ),
+        ),
 
+      ),
     );
   }
 

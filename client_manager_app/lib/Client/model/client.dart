@@ -14,6 +14,7 @@ class Client {
   //the parameters are optional
   Client({
     this.id,
+    this.photoPath,
     this.name,
     this.lastName,
     this.birthday,
@@ -27,6 +28,7 @@ class Client {
     //are coming from querying the database and converting
     //it into a Client object
     id: data['id'],
+    photoPath: data["photoPath"],
     name: data['name'],
     lastName: data["lastName"],
     birthday: data["birthday"],
@@ -42,6 +44,7 @@ class Client {
     //This will be used to convert Todo objects that
     //are to be stored into the datbase in a form of JSON
     "id": this.id,
+    "photoPath" : this.photoPath,
     "name": this.name,
     "lastName" : this.lastName,
     "birthday" : this.birthday,
