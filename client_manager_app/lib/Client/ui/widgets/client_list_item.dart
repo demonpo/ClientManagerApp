@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 class ClientListItem extends StatelessWidget{
   Client client;
   VoidCallback onLongPress;
+  VoidCallback onTap;
 
-  ClientListItem({this.client, this.onLongPress});
+  ClientListItem({this.client, this.onLongPress, this.onTap});
   @override
   Widget build(BuildContext context) {
     final hasPhoto = client.photoPath == "" ? false : true;
-
 
     final clientPhoto = Container(
       width: 50,
@@ -61,7 +61,7 @@ class ClientListItem extends StatelessWidget{
           ),
           //Client details
           Text(
-            "Dummy Details",
+            client.email,
             style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -74,6 +74,7 @@ class ClientListItem extends StatelessWidget{
 
     return InkWell(
       onLongPress: onLongPress,
+      onTap: onTap,
       child: Container(
         height: 80,
         padding: EdgeInsets.only(

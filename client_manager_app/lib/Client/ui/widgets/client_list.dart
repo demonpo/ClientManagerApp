@@ -1,5 +1,6 @@
 import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
 import 'package:clientmanagerapp/Client/model/client.dart';
+import 'package:clientmanagerapp/Client/ui/screens/client_details_screen.dart';
 import 'package:clientmanagerapp/Client/ui/widgets/client_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
@@ -66,6 +67,12 @@ class ClientList extends StatelessWidget{
             Client client = snapshot.data[itemPosition];
             return ClientListItem(
               client: client,
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => BlocProvider(
+                  bloc: clientBloc,
+                  child: ClientDetailsScreen(client: client,),
+                )));
+              },
               onLongPress: (){
                 _settingModalBottomSheet(context,client.id);
               },
