@@ -6,9 +6,8 @@ import 'package:image_picker/image_picker.dart';
 
 class DarkImagePicker extends StatefulWidget{
   File image;
-  double height;
-  double width;
-  DarkImagePicker({@required this.height,@required this.width});
+  double size;
+  DarkImagePicker({@required this.size});
 
   @override
   State<StatefulWidget> createState() {
@@ -42,16 +41,32 @@ class _DarkImagePickerState extends State<DarkImagePicker>{
           top:10,
           bottom: 10,
         ),
-        width: widget.width,
-        height: widget.height,
+        width: widget.size,
+        height: widget.size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Color(0xff36393f),
+          color: Color(0xff43b581),
 
-          image: DecorationImage(
-            fit: BoxFit.cover,
-              image: widget.image == null ? AssetImage("assets/icons/user.png") : FileImage(widget.image),
-          ),
+        ),
+        child: Stack(
+          children: <Widget>[
+            Center(
+              child: Icon(
+                Icons.person,
+                color: Colors.white,
+                size: widget.size/2,
+              ),
+            ),
+            widget.image != null ? Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: FileImage(widget.image),
+                ),
+              ),
+            ) :  Container(),
+          ],
         ),
       ),
     );
@@ -59,3 +74,4 @@ class _DarkImagePickerState extends State<DarkImagePicker>{
 
 
 }
+

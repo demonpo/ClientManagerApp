@@ -15,7 +15,7 @@ class DatabaseProvider {
   createDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     //"ReactiveTodo.db is our database instance name
-    String path = join(documentsDirectory.path, "ReactiveClientManager2.db");
+    String path = join(documentsDirectory.path, "ReactiveClientManager2-1.db");
     var database = await openDatabase(path,
         version: 2, onCreate: initDB, onUpgrade: onUpgrade);
     return database;

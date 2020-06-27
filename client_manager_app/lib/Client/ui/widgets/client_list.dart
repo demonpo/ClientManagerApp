@@ -65,6 +65,7 @@ class ClientList extends StatelessWidget{
           itemCount: snapshot.data.length,
           itemBuilder: (context, itemPosition) {
             Client client = snapshot.data[itemPosition];
+            print("${client.photoPath} ${client.name}");
             return ClientListItem(
               client: client,
               onTap: (){
@@ -89,11 +90,6 @@ class ClientList extends StatelessWidget{
     else {
       print("NO DATA");
       return Center(
-        /*since most of our I/O operations are done
-        outside the main thread asynchronously
-        we may want to display a loading indicator
-        to let the use know the app is currently
-        processing*/
         child: Container(),
       );
 

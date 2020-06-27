@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
 import 'package:clientmanagerapp/Client/model/client.dart';
 import 'package:clientmanagerapp/Widgets/dark_dropdown_picker_form.dart';
+import 'package:clientmanagerapp/Widgets/dark_image_picker.dart';
 import 'package:clientmanagerapp/Widgets/dark_text_form_input.dart';
 import 'package:clientmanagerapp/Widgets/dark_time_picker_form.dart';
 import 'package:flutter/gestures.dart';
@@ -10,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:intl/intl.dart';
-import 'package:clientmanagerapp/Widgets/dark_image_picker.dart';
 
 class ClientRegisterForm extends StatefulWidget{
   @override
@@ -23,7 +23,7 @@ class ClientRegisterForm extends StatefulWidget{
 }
 
 class _ClientRegisterForm extends State<ClientRegisterForm>{
-  final darkImagePicker = DarkImagePicker(height: 100, width: 100,);
+  final darkImagePicker = DarkImagePicker( size: 100,);
   ClientBloc clientBloc;
   var data;
   bool autoValidate = true;
@@ -162,6 +162,7 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
                             .currentState.value['nombres'].runtimeType);
                         print(_fbKey.currentState.value);
                         print('validation OK');
+                        print(darkImagePicker.image == null ? "" : darkImagePicker.image.path);
                         clientBloc.addClient(Client(
                           photoPath: darkImagePicker.image == null ? "" : darkImagePicker.image.path,
                           name: _fbKey.currentState.value['nombres'],

@@ -12,6 +12,7 @@ class ClientListItem extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     final hasPhoto = client.photoPath == "" ? false : true;
+    //final hasPhoto = client.photoPath == null ? false : true;
 
     final clientPhoto = Container(
       width: 50,
@@ -39,7 +40,7 @@ class ClientListItem extends StatelessWidget{
                 image: FileImage(File(client.photoPath)),
               ),
             ),
-          ) :  null,
+          ) :  Container(),
         ],
       )
     );

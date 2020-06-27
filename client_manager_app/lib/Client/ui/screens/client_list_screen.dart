@@ -16,6 +16,7 @@ class ClientListScreen extends StatelessWidget{
     return Scaffold(
       body: ClientList(),
       floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.person_add),
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => BlocProvider(
             bloc: clientBloc,
