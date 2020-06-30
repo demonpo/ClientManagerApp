@@ -1,9 +1,39 @@
+import 'dart:io';
+
 import 'package:clientmanagerapp/Client/model/client.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ClientDetailsContainer extends StatelessWidget{
   Client client;
   ClientDetailsContainer({@required this.client});
+
+  Future<void> _makePhoneCall(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  void launchWhatsApp(
+      {@required String phone,
+        @required String message,
+      }) async {
+    String url() {
+      if (Platform.isIOS) {
+        return "whatsapp://wa.me/$phone/?text=${Uri.parse(message)}";
+      } else {
+        return "whatsapp://send?phone=$phone&text=${Uri.parse(message)}";
+      }
+    }
+
+    if (await canLaunch(url())) {
+      await launch(url());
+    } else {
+      throw 'Could not launch ${url()}';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,17 +60,49 @@ class ClientDetailsContainer extends StatelessWidget{
             children: <Widget>[
               Container(
                 margin: EdgeInsets.only(bottom: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text("Numero de telefono:", style: TextStyle(fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.grey[500]),),
-                    Text(client.phoneNumber, style: TextStyle(fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white),)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text("Numero de telefono:", style: TextStyle(fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.grey[500]),),
+                        Text(client.phoneNumber, style: TextStyle(fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white),)
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        FloatingActionButton(
+                          heroTag: "btn1",
+                          elevation: 0,
+                          mini: true,
+                          backgroundColor: Color(0xff43b581),
+                          onPressed: () => _makePhoneCall("tel:${client.phoneNumber}"),
+                          child: Icon(
+                              Icons.phone
+                          ),
+                        ),
+                        FloatingActionButton(
+                          heroTag: "btn2",
+                          elevation: 0,
+                          mini: true,
+                          backgroundColor: Color(0xff43b581),
+                          onPressed: () => launchWhatsApp(phone: client.phoneNumber,message: "hola"),
+                          child: Icon(
+                              Icons.whatshot
+                          ),
+                        ),
+
+                      ],
+                    ),
+
                   ],
                 ),
+
                 padding: EdgeInsets.symmetric(horizontal: 32),
               ),
 

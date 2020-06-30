@@ -4,13 +4,12 @@ import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
 import 'package:clientmanagerapp/Client/model/client.dart';
 import 'package:clientmanagerapp/Widgets/dark_dropdown_picker_form.dart';
 import 'package:clientmanagerapp/Widgets/dark_image_picker.dart';
+import 'package:clientmanagerapp/Widgets/dark_phone_input_form_2.dart';
 import 'package:clientmanagerapp/Widgets/dark_text_form_input.dart';
 import 'package:clientmanagerapp/Widgets/dark_time_picker_form.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
-import 'package:intl/intl.dart';
 
 class ClientRegisterForm extends StatefulWidget{
   @override
@@ -30,7 +29,8 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
   bool readOnly = false;
   bool showSegmentedControl = true;
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
-  final ValueChanged _onChanged = (val) => print(val);
+
+  DarkPhoneInputForm2 darkPhoneInputForm2 = DarkPhoneInputForm2();
 
 
 
@@ -133,6 +133,19 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
                           FormBuilderValidators.numeric(),
                         ],
                       ),
+                      darkPhoneInputForm2,
+
+
+                      /*
+                      DarkPhoneInputForm(
+                        attribute: "darkPhone",
+                        hintText: "Telefono",
+                        dialogTitle: "Seleccione el codigo del País",
+                        phoneCountryIsoCode: "EC",
+                        validators: [
+                          FormBuilderValidators.required()
+                        ],
+                      ), */
                       DarkDropdownPickerForm(
                         attribute: "genero",
                         hintText: "Genero",
@@ -172,7 +185,7 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
                           name: _fbKey.currentState.value['nombres'],
                           lastName: _fbKey.currentState.value['apellidos'],
                           email: _fbKey.currentState.value['email'],
-                          phoneNumber: _fbKey.currentState.value['phoneNumber'],
+                          phoneNumber: darkPhoneInputForm2.phoneNumber,
                           gender: _fbKey.currentState.value['genero'],
                           birthday: _fbKey.currentState.value['birthday'].toString(),
                         ));
