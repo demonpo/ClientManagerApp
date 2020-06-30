@@ -24,7 +24,7 @@ class _DarkImagePickerState extends State<DarkImagePicker>{
   final picker = ImagePicker();
 
   Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    final pickedFile = await picker.getImage(source: ImageSource.camera, imageQuality: 50);
 
     setState(() {
       widget.image = File(pickedFile.path);

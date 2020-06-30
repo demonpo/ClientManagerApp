@@ -31,8 +31,14 @@ class DarkTimePickerForm extends StatelessWidget{
         attribute: attribute,
         inputType: InputType.date,
         format: DateFormat("yyyy-MM-dd"),
+        style: TextStyle(
+          color: Colors.white
+        ),
         decoration: InputDecoration(
           labelText: labelText,
+          labelStyle: TextStyle(
+            color: Color(0xff686c77),
+          ),
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
 

@@ -94,6 +94,7 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
                     children: <Widget>[
                       darkImagePicker,
                       DarkTextFormInput(
+                        maxLines: 1,
                         attribute: "nombres",
                         hintText: "Ingrese Nombre",
                         errorText: "Espacio vacio",
@@ -103,6 +104,7 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
                         ],
                       ),
                       DarkTextFormInput(
+                        maxLines: 1,
                         attribute: "apellidos",
                         hintText: "Ingrese Apellido",
                         errorText: "Espacio vacio",
@@ -112,6 +114,7 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
                         ],
                       ),
                       DarkTextFormInput(
+                        maxLines: 1,
                         attribute: "email",
                         hintText: "Ingrese email",
                         errorText: "Espacio vacio",
@@ -121,6 +124,7 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
                         ],
                       ),
                       DarkTextFormInput(
+                        maxLines: 1,
                         attribute: "phoneNumber",
                         hintText: "Ingrese Numero de Telefono",
                         errorText: "Espacio vacio",
