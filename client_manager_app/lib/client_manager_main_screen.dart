@@ -25,6 +25,7 @@ class _ClientManagerMainScreen extends State<ClientManagerMainScreen> {
   ];
 
   void onTapTapped(int index){
+
     setState(() {
       indexTap = index;
     });

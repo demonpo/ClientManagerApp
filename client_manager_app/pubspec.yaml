@@ -23,6 +23,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  passcode_screen: ^1.2.0
+  local_auth: ^0.6.1+3
   url_launcher: ^5.4.11
   intl_phone_number_input: ^0.4.6+2
   flutter_form_builder: ^3.11.2
@@ -85,3 +88,5 @@ flutter:
 
   assets:
     - assets/icons/user.png
+    - assets/icons/logo.jpg
+    - assets/icons/logo_2.png

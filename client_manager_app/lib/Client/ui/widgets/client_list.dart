@@ -1,5 +1,5 @@
-import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
 import 'package:clientmanagerapp/Client/model/client.dart';
+import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
 import 'package:clientmanagerapp/Client/ui/screens/client_details_screen.dart';
 import 'package:clientmanagerapp/Client/ui/widgets/client_list_item.dart';
 import 'package:flutter/material.dart';
@@ -7,10 +7,8 @@ import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 
 class ClientList extends StatelessWidget{
   ClientBloc clientBloc;
-
   @override
   Widget build(BuildContext context) {
-
     clientBloc = BlocProvider.of<ClientBloc>(context);
     clientBloc.getClients();
     double screenWidth = MediaQuery.of(context).size.width;
@@ -129,10 +127,4 @@ class ClientList extends StatelessWidget{
     );
   }
 
-
-
-
-}
-
-
-
+  }

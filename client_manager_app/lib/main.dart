@@ -1,5 +1,11 @@
+import 'dart:async';
 import 'package:clientmanagerapp/client_manager_main_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:passcode_screen/circle.dart';
+import 'package:passcode_screen/keyboard.dart';
+import 'package:passcode_screen/passcode_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,109 +16,196 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: '8 Armas Payment',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
+        primaryColor: Color(0xff202225),
+        canvasColor: Color(0xffCCD4E0),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: ClientManagerMainScreen(),
+      home: MyHomePage()
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  final StreamController<bool> _verificationNotifier = StreamController<bool>.broadcast();
+  bool isAuthenticated = false;
+  bool _canCheckBiometrics;
+  bool withoutBiometric=false;
+  final LocalAuthentication auth = LocalAuthentication();
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  List<BiometricType> _availableBiometrics;
+  String _authorized = 'No Autorizado';
+  bool _isAuthenticating = false;
+
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    _checkBiometrics();
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text("8 Armas Payment"),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+      body: Container(
+        margin: const EdgeInsets.only(left:20,top: 50.0,right:20),
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+        children: <Widget>[
+         Image.asset(
+              'assets/icons/'
+                  'logo_2.png',
+              fit: BoxFit.fill,
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
+       Container(margin: const EdgeInsets.only(top: 100.0),
+            child:FloatingActionButton.extended(
+          onPressed: login,
+          label: Text('Ingresar'),
+          icon: Icon(Icons.fingerprint),
+          backgroundColor: Color(0xff202225),
+        )
+        )
+        ]
+      )
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
+
+void login() {
+
+  if(_canCheckBiometrics) _authenticate();
+  else{
+    _showLockScreen(
+      context,
+      opaque: false,
+      cancelButton: Text(
+        'Cancelar',
+        style: const TextStyle(fontSize: 16, color: Colors.white),
+        semanticsLabel: 'Cancelar',
+      ),
+    );
+
+  }
+
+  }
+
+  _showLockScreen(BuildContext context,
+      { bool opaque,
+        CircleUIConfig circleUIConfig,
+        KeyboardUIConfig keyboardUIConfig,
+        Widget cancelButton,
+        List<String> digits}) {
+    Navigator.push(
+        context,
+        PageRouteBuilder(
+          opaque: opaque,
+          pageBuilder: (context, animation, secondaryAnimation) => PasscodeScreen(
+            title: Text(
+              'Ingrese código de acceso',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white, fontSize: 28),
+            ),
+            circleUIConfig: circleUIConfig,
+            keyboardUIConfig: keyboardUIConfig,
+            passwordEnteredCallback: _onPasscodeEntered,
+            cancelButton: cancelButton,
+            deleteButton: Text(
+              'Borrar',
+              style: const TextStyle(fontSize: 16, color: Colors.white),
+              semanticsLabel: 'Borrar',
+            ),
+            shouldTriggerVerification: _verificationNotifier.stream,
+            backgroundColor: Colors.black.withOpacity(0.8),
+            cancelCallback: _onPasscodeCancelled,
+            digits: digits,
+          ),
+
+        ));
+
+
+  }
+
+  Future<void> _checkBiometrics() async {
+    bool canCheckBiometrics;
+    try {
+      canCheckBiometrics = await auth.canCheckBiometrics;
+    } on PlatformException catch (e) {
+      print(e);
+    }
+    if (!mounted) return;
+
+    setState(() {
+      _canCheckBiometrics = canCheckBiometrics;
+    });
+  }
+
+  Future<void> _authenticate() async {
+    bool authenticated = false;
+    try {
+      setState(() {
+        _isAuthenticating = true;
+        _authorized = 'Autentificando...';
+      });
+      authenticated = await auth.authenticateWithBiometrics(
+          localizedReason: 'Escanea tu huella para autenticarte',
+          useErrorDialogs: true,
+          stickyAuth: true);
+      setState(() {
+        _isAuthenticating = false;
+        _authorized = 'Autentificando...';
+      });
+    } on PlatformException catch (e) {
+      print(e);
+    }
+    if (!mounted) return;
+
+    final String message = authenticated ? 'Autorizado' : 'No Autorizado';
+    setState(() {
+      _authorized = message;
+    });
+    if(authenticated){
+      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ClientManagerMainScreen()));
+    }
+  }
+
+  void _cancelAuthentication() {
+    auth.stopAuthentication();
+  }
+
+  _onPasscodeEntered(String enteredPasscode) {
+    isAuthenticated = '123456' == enteredPasscode;
+    _verificationNotifier.add(isAuthenticated);
+    if (isAuthenticated) {
+      setState(() {
+        passAuth();
+        this.isAuthenticated = true;
+      });
+    }
+  }
+
+  _onPasscodeCancelled() {
+    Navigator.maybePop(context);
+  }
+
+  @override
+  void dispose() {
+    _verificationNotifier.close();
+    super.dispose();
+  }
+
+  void passAuth() {
+    if (isAuthenticated) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => ClientManagerMainScreen()),
+      );
+    }
+  }
+
 }
+

@@ -1,7 +1,6 @@
 import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
 import 'package:clientmanagerapp/Client/ui/screens/client_register_screen.dart';
 import 'package:clientmanagerapp/Client/ui/widgets/client_list.dart';
-import 'package:clientmanagerapp/Client/ui/widgets/client_register_form.dart';
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 
