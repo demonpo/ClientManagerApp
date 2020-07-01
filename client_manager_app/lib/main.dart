@@ -37,7 +37,6 @@ class _MyHomePageState extends State<MyHomePage> {
   final StreamController<bool> _verificationNotifier = StreamController<bool>.broadcast();
   bool isAuthenticated = false;
   bool _canCheckBiometrics;
-  bool withoutBiometric=false;
   final LocalAuthentication auth = LocalAuthentication();
 
   List<BiometricType> _availableBiometrics;
@@ -182,8 +181,10 @@ void login() {
     _verificationNotifier.add(isAuthenticated);
     if (isAuthenticated) {
       setState(() {
-        passAuth();
-        this.isAuthenticated = true;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => ClientManagerMainScreen()),
+        );
       });
     }
   }
@@ -196,15 +197,6 @@ void login() {
   void dispose() {
     _verificationNotifier.close();
     super.dispose();
-  }
-
-  void passAuth() {
-    if (isAuthenticated) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => ClientManagerMainScreen()),
-      );
-    }
   }
 
 }
