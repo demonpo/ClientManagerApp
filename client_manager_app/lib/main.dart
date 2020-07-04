@@ -15,6 +15,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
       title: '8 Armas Payment',
       theme: ThemeData(
@@ -52,24 +56,33 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text("8 Armas Payment"),
       ),
       body: Container(
-        margin: const EdgeInsets.only(left:20,top: 50.0,right:20),
+        height: double.infinity,
+        width: double.infinity,
+        color: Color(0xff292b2f),
+        margin: const EdgeInsets.only(),
         child: Column(
-        children: <Widget>[
-         Image.asset(
-              'assets/icons/'
-                  'logo_2.png',
-              fit: BoxFit.fill,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              height: 200,
+              width: 200,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/icons/'
+                      'logo_2.png'),
+                ),
+              ),
             ),
-       Container(margin: const EdgeInsets.only(top: 100.0),
-            child:FloatingActionButton.extended(
-          onPressed: login,
-          label: Text('Ingresar'),
-          icon: Icon(Icons.fingerprint),
-          backgroundColor: Color(0xff202225),
+            Container(margin: const EdgeInsets.only(top: 100.0),
+                child:FloatingActionButton.extended(
+                  onPressed: login,
+                  label: Text('Ingresar'),
+                  icon: Icon(Icons.fingerprint),
+                  backgroundColor: Color(0xff202225),
+                )
+            )
+          ]
         )
-        )
-        ]
-      )
       ),
     );
   }
