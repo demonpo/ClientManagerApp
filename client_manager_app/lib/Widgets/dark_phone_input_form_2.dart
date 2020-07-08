@@ -3,6 +3,8 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 class DarkPhoneInputForm2 extends StatefulWidget{
   String phoneNumber;
+  String hintText;
+  DarkPhoneInputForm2({this.hintText});
 
   @override
   State<StatefulWidget> createState() {
@@ -45,6 +47,13 @@ class _DarDarkPhoneInputForm2 extends State<DarkPhoneInputForm2>{
         },
         textStyle: TextStyle(
           color: Colors.white,
+        ),
+        inputDecoration: InputDecoration(
+          hintText: widget.hintText,
+          hintStyle: TextStyle(
+            color: Color(0xff686c77),
+          ),
+          focusedBorder: InputBorder.none,
         ),
         ignoreBlank: false,
         autoValidate: false,

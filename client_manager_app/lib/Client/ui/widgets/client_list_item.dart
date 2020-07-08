@@ -52,14 +52,19 @@ class ClientListItem extends StatelessWidget{
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           //client Name
-          Text(
-            "${client.name} ${client.lastName}",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white
+          Container(
+            width: 260,
+            child: Text(
+              "${client.name} ${client.lastName}",
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white
+              ),
             ),
           ),
+
           //Client details
           Text(
             client.email,

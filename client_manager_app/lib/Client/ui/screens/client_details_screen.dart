@@ -69,7 +69,17 @@ class _ClientDetailsScreen extends State<ClientDetailsScreen>{
                         ),
                         margin: EdgeInsets.only(right: 15),
                       ),
-                      Text("${widget.client.name} ${widget.client.lastName}", style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w700),),
+                      Flexible(
+                        child: Text(
+                          "${widget.client.name} ${widget.client.lastName}",
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: Colors.white,
+                              fontSize: 30,
+                              fontWeight: FontWeight.w700
+                          ),
+                        ),
+                      ),
+
 
 
                     ],

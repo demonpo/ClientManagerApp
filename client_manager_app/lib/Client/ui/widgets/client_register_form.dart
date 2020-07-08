@@ -30,7 +30,7 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
   bool showSegmentedControl = true;
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
 
-  DarkPhoneInputForm2 darkPhoneInputForm2 = DarkPhoneInputForm2();
+  DarkPhoneInputForm2 darkPhoneInputForm2 = DarkPhoneInputForm2(hintText: "Numero de Telefono",);
 
 
 
@@ -123,29 +123,7 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
                           FormBuilderValidators.email(),
                         ],
                       ),
-                      DarkTextFormInput(
-                        maxLines: 1,
-                        attribute: "phoneNumber",
-                        hintText: "Ingrese Numero de Telefono",
-                        errorText: "Espacio vacio",
-                        iconData: Icons.phone,
-                        validators: [
-                          FormBuilderValidators.numeric(),
-                        ],
-                      ),
                       darkPhoneInputForm2,
-
-
-                      /*
-                      DarkPhoneInputForm(
-                        attribute: "darkPhone",
-                        hintText: "Telefono",
-                        dialogTitle: "Seleccione el codigo del País",
-                        phoneCountryIsoCode: "EC",
-                        validators: [
-                          FormBuilderValidators.required()
-                        ],
-                      ), */
                       DarkDropdownPickerForm(
                         attribute: "genero",
                         hintText: "Genero",
