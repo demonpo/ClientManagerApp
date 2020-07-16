@@ -28,6 +28,7 @@ class DarkTimePickerForm extends StatelessWidget{
       ),
 
       child: FormBuilderDateTimePicker(
+        key: Key(attribute),
         attribute: attribute,
         inputType: InputType.date,
         format: DateFormat("yyyy-MM-dd"),

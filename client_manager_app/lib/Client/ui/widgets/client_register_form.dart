@@ -17,8 +17,6 @@ class ClientRegisterForm extends StatefulWidget{
     // TODO: implement createState
     return _ClientRegisterForm();
   }
-
-
 }
 
 class _ClientRegisterForm extends State<ClientRegisterForm>{
@@ -32,13 +30,15 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
 
   DarkPhoneInputForm2 darkPhoneInputForm2 = DarkPhoneInputForm2(hintText: "Numero de Telefono",);
 
-
-
   @override
   Widget build(BuildContext context) {
 
+    //Builder(builder: (context) {
+    //});
+
     clientBloc = BlocProvider.of<ClientBloc>(context);
 
+    const SnackBar submittedToast = SnackBar(content: Text('Form submitted'));
 
     return Container(
       color: Color(0xff292b2f),
@@ -146,6 +146,7 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
               children: <Widget>[
                 Expanded(
                   child: MaterialButton(
+                    key: Key('submit'),
                     color: Theme.of(context).accentColor,
                     child: Text(
                       'Submit',
@@ -158,6 +159,7 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
                         print(_fbKey.currentState.value);
                         print('validation OK');
                         print(darkImagePicker.image == null ? "" : darkImagePicker.image.path);
+                        
                         clientBloc.addClient(Client(
                           photoPath: darkImagePicker.image == null ? "" : darkImagePicker.image.path,
                           name: _fbKey.currentState.value['nombres'],
@@ -167,6 +169,7 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
                           gender: _fbKey.currentState.value['genero'],
                           birthday: _fbKey.currentState.value['birthday'].toString(),
                         ));
+                        Scaffold.of(context).showSnackBar(submittedToast);
                         Navigator.pop(context);
                       }
                       else {
@@ -197,7 +200,6 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
             ),
           ],
         ),
-
     );
   }
 

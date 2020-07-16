@@ -38,6 +38,7 @@ class _DarDarkPhoneInputForm2 extends State<DarkPhoneInputForm2>{
       ),
 
       child: InternationalPhoneNumberInput(
+        key: Key('cell'),
         onInputChanged: (PhoneNumber number) {
           widget.phoneNumber = number.phoneNumber;
           print(number.phoneNumber);

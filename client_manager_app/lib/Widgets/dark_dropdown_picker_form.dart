@@ -32,6 +32,7 @@ class DarkDropdownPickerForm extends StatelessWidget{
         ),
 
         child: FormBuilderDropdown(
+          key: Key(attribute),
           attribute: attribute,
           decoration: InputDecoration(
             enabledBorder: InputBorder.none,

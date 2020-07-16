@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class DarkTextFormInput extends StatelessWidget{
-
+  
+  String keyname;
   String attribute;
   String hintText;
   String errorText;
@@ -33,6 +34,7 @@ class DarkTextFormInput extends StatelessWidget{
         maxLines: maxLines,
         attribute: attribute,
         validators: validators,
+        key: Key(attribute),
         decoration: InputDecoration(
           icon: Icon(iconData),
           hintText: hintText,
