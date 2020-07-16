@@ -7,6 +7,7 @@ import 'package:passcode_screen/circle.dart';
 import 'package:passcode_screen/keyboard.dart';
 import 'package:passcode_screen/passcode_screen.dart';
 
+
 void main() {
   runApp(MyApp());
 }
@@ -43,9 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _canCheckBiometrics;
   final LocalAuthentication auth = LocalAuthentication();
 
-  List<BiometricType> _availableBiometrics;
-  String _authorized = 'No Autorizado';
-  bool _isAuthenticating = false;
+
 
 
   @override
@@ -89,7 +88,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 void login() {
-
   if(_canCheckBiometrics) _authenticate();
   else{
     _showLockScreen(
@@ -101,9 +99,7 @@ void login() {
         semanticsLabel: 'Cancelar',
       ),
     );
-
   }
-
   }
 
   _showLockScreen(BuildContext context,
@@ -158,19 +154,12 @@ void login() {
 
   Future<void> _authenticate() async {
     bool authenticated = false;
+    String _authorized = 'No Autorizado';
     try {
-      setState(() {
-        _isAuthenticating = true;
-        _authorized = 'Autentificando...';
-      });
       authenticated = await auth.authenticateWithBiometrics(
           localizedReason: 'Escanea tu huella para autenticarte',
           useErrorDialogs: true,
           stickyAuth: true);
-      setState(() {
-        _isAuthenticating = false;
-        _authorized = 'Autentificando...';
-      });
     } on PlatformException catch (e) {
       print(e);
     }
@@ -183,10 +172,6 @@ void login() {
     if(authenticated){
       Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ClientManagerMainScreen()));
     }
-  }
-
-  void _cancelAuthentication() {
-    auth.stopAuthentication();
   }
 
   _onPasscodeEntered(String enteredPasscode) {

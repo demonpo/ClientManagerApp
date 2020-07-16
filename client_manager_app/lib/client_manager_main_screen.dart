@@ -1,5 +1,6 @@
 import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
 import 'package:clientmanagerapp/Client/ui/screens/client_list_screen.dart';
+import 'package:clientmanagerapp/Client/ui/widgets/list_settings.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +22,7 @@ class _ClientManagerMainScreen extends State<ClientManagerMainScreen> {
     ),
     //ClientListScreen(),
     Container(),
-    Container(),
+    ListSettings()
   ];
 
   void onTapTapped(int index){
@@ -38,6 +39,7 @@ class _ClientManagerMainScreen extends State<ClientManagerMainScreen> {
 
 
     return Scaffold(
+
       body: widgetsChildren[indexTap],
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
@@ -51,21 +53,21 @@ class _ClientManagerMainScreen extends State<ClientManagerMainScreen> {
               BottomNavigationBarItem(
                 icon: Icon(
                   Icons.people,
-                  //color: Color(0xff36393f)
+                  color: Color(0xffffffff)
                 ),
                 title: Text("")
               ),
               BottomNavigationBarItem(
                   icon: Icon(
                       Icons.notifications,
-                      //color: Color(0xff36393f),
+                      color: Color(0xffffffff),
                   ),
                   title: Text("")
               ),
               BottomNavigationBarItem(
                   icon: Icon(
-                    Icons.person,
-                      //color: Color(0xff36393f)
+                    Icons.settings,
+                      color: Color(0xffffffff)
                   ),
                   title: Text("")
               ),

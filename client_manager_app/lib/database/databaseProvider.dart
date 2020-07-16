@@ -15,9 +15,9 @@ class DatabaseProvider {
   createDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     //"ReactiveTodo.db is our database instance name
-    String path = join(documentsDirectory.path, "ReactiveClientManager2-1.db");
+    String path = "assets/db8ArmasPayment.db";
     var database = await openDatabase(path,
-        version: 2, onCreate: initDB, onUpgrade: onUpgrade);
+        version: 1, onCreate: initDB, onUpgrade: onUpgrade);
     return database;
   }
   //This is optional, and only used for changing DB schema migrations
@@ -40,4 +40,6 @@ class DatabaseProvider {
         "is_done INTEGER "
         ")");
   }
+
+
 }

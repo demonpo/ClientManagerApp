@@ -11,6 +11,7 @@ class ClientListItem extends StatelessWidget{
   ClientListItem({this.client, this.onLongPress, this.onTap});
   @override
   Widget build(BuildContext context) {
+
     final hasPhoto = client.photoPath == "" ? false : true;
     //final hasPhoto = client.photoPath == null ? false : true;
 
