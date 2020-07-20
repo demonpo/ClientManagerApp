@@ -27,7 +27,7 @@ class DatabaseUpload {
   final storage = new FlutterSecureStorage();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn =
-  GoogleSignIn(scopes: [ga.DriveApi.DriveFileScope]);
+  GoogleSignIn(scopes: [ga.DriveApi.DriveAppdataScope]);
   GoogleSignInAccount googleSignInAccount;
   ga.FileList list;
   var signedIn = false;
@@ -49,10 +49,14 @@ class DatabaseUpload {
     _logoutFromGoogle();
   }
 
-  Future<void> _loginWithGoogle() async {
-
+  Future<bool> isSignedIn() async {
     signedIn = await storage.read(key: "signedIn") == "true" ? true : false;
     print("LOGIN:  ${signedIn}");
+    return signedIn;
+  }
+
+  Future<void> _loginWithGoogle() async {
+    signedIn = await storage.read(key: "signedIn") == "true" ? true : false;
     googleSignIn.onCurrentUserChanged
         .listen((GoogleSignInAccount googleSignInAccount) async {
       if (googleSignInAccount != null) {
@@ -111,6 +115,8 @@ class DatabaseUpload {
 
 
   _uploadFileToGoogleDrive() async {
+    await _loginWithGoogle();
+    await Future.delayed(Duration(seconds: 3));
     var client = GoogleHttpClient(await googleSignInAccount.authHeaders);
     var drive = ga.DriveApi(client);
     print("Uploading file");
@@ -155,15 +161,14 @@ class DatabaseUpload {
   }
 
   Future<void> _listGoogleDriveFiles() async {
+    await _loginWithGoogle();
+    await Future.delayed(Duration(seconds: 3));
     var client = GoogleHttpClient(await googleSignInAccount.authHeaders);
     var drive = ga.DriveApi(client);
-
     drive.files.list(spaces: 'appDataFolder').then((value) {
-        list = value;
-      for (var i = 0; i < list.files.length; i++) {
-        print("Id: ${list.files[i].id} File Name:${list.files[i].name}");
-        _downloadGoogleDriveFile(list.files[i].name, list.files[i].id);
-      }
+          list = value;
+          print("Id: ${list.files[0].id} File Name:${list.files[0].name}");
+        _downloadGoogleDriveFile(list.files[0].name, list.files[0].id);
     });
   }
 
