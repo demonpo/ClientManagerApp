@@ -149,14 +149,11 @@ class DatabaseUpload {
     final saveFile = File('${directory.path}/$fName');
     List<int> dataStore = [];
     file.stream.listen((data) {
-      print("DataReceived: ${data.length}");
       dataStore.insertAll(dataStore.length, data);
     }, onDone: () {
-      print("Task Done");
       saveFile.writeAsBytes(dataStore);
       print("File saved at ${saveFile.path}");
     }, onError: (error) {
-      print("Some Error");
     });
   }
 
