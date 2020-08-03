@@ -137,6 +137,18 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
                         labelText: "Fecha de nacimiento",
                       ),
 
+                      DarkTextFormInput(
+                        maxLines: 1,
+                        attribute: "mensualidad",
+                        hintText: "Ingrese valor mensual",
+                        errorText: "Espacio vacio",
+                        iconData: Icons.monetization_on,
+                        validators: [
+                          FormBuilderValidators.numeric(),
+                          FormBuilderValidators.required()
+                        ],
+                      ),
+
                     ],
                   ),
                 ),
@@ -153,6 +165,10 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
                     ),
                     onPressed: () {
                       if (_fbKey.currentState.saveAndValidate()) {
+                        var inscriptionDate = DateTime.now();
+                        print(inscriptionDate.toIso8601String());
+                        var dealinePaymentDate = inscriptionDate.add(Duration(days: 30));
+                        print(dealinePaymentDate.toIso8601String());
                         print(_fbKey
                             .currentState.value['nombres'].runtimeType);
                         print(_fbKey.currentState.value);
@@ -166,6 +182,10 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
                           phoneNumber: darkPhoneInputForm2.phoneNumber,
                           gender: _fbKey.currentState.value['genero'],
                           birthday: _fbKey.currentState.value['birthday'].toString(),
+                          inscriptionDate: inscriptionDate.toString(),
+                          deadLinePaymentDate: dealinePaymentDate.toString(),
+                          debtValue: double.parse(_fbKey.currentState.value['mensualidad']),
+                          valorMensual:  double.parse(_fbKey.currentState.value['mensualidad'])
                         ));
                         Navigator.pop(context);
                       }

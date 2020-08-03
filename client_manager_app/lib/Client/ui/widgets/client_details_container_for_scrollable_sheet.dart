@@ -153,6 +153,57 @@ class ClientDetailsContainer extends StatelessWidget{
                 padding: EdgeInsets.symmetric(horizontal: 32),
               ),
 
+              Container(
+                margin: EdgeInsets.only(bottom: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text("Fecha de inscripcion:", style: TextStyle(fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.grey[500]),),
+                    Text(client.inscriptionDate, style: TextStyle(fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white),)
+
+                  ],
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 32),
+              ),
+
+              Container(
+                margin: EdgeInsets.only(bottom: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text("Fecha limite de pago mensual:", style: TextStyle(fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.grey[500]),),
+                    Text(client.deadLinePaymentDate, style: TextStyle(fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white),)
+
+                  ],
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 32),
+              ),
+
+              Container(
+                margin: EdgeInsets.only(bottom: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text("Valor mensual:", style: TextStyle(fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.grey[500]),),
+                    Text(client.valorMensual.toString(), style: TextStyle(fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white),)
+
+                  ],
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 32),
+              ),
+
             ],
           ),
         ),

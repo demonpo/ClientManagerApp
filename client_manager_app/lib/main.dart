@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'dart:math';
+import 'package:background_fetch/background_fetch.dart';
+import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
 import 'package:clientmanagerapp/client_manager_main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,12 +9,39 @@ import 'package:local_auth/local_auth.dart';
 import 'package:passcode_screen/circle.dart';
 import 'package:passcode_screen/keyboard.dart';
 import 'package:passcode_screen/passcode_screen.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'package:path/path.dart';
+
+final DATABASE_NAME="ReactiveClientManager2-3.db";
+
+void backgroundFetchHeadlessTask(String taskId) async {
+  print("[BackgroundFetch] Headless event received: $taskId");
+  ClientBloc clientBloc;
+  var documentsDirectory = await getApplicationDocumentsDirectory();
+  var path = join(documentsDirectory.path, DATABASE_NAME);
+
+  if (await File(path).exists()) {
+    clientBloc= ClientBloc();
+    print("File exists");
+  } else {
+    print("File don't exists");
+  }
+
+  BackgroundFetch.finish(taskId);
+
+}
 
 void main() {
   runApp(MyApp());
+  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
 }
 
 class MyApp extends StatelessWidget {
+
+
+
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -46,10 +76,18 @@ class _MyHomePageState extends State<MyHomePage> {
   List<BiometricType> _availableBiometrics;
   String _authorized = 'No Autorizado';
   bool _isAuthenticating = false;
+  BuildContext context2;
 
 
   @override
+  void initState() {
+    super.initState();
+    initPlatformState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    context2 = context;
     _checkBiometrics();
     return Scaffold(
       appBar: AppBar(
@@ -87,22 +125,78 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Future<void> initPlatformState() async {
+    // Configure BackgroundFetch.
+    BackgroundFetch.configure(BackgroundFetchConfig(
+      minimumFetchInterval: 15,
+      forceAlarmManager: false,
+      stopOnTerminate: false,
+      startOnBoot: true,
+      enableHeadless: true,
+      requiresBatteryNotLow: false,
+      requiresCharging: false,
+      requiresStorageNotLow: false,
+      requiresDeviceIdle: false,
+      requiredNetworkType: NetworkType.NONE,
+    ), _onBackgroundFetch).then((int status) {
+      print('[BackgroundFetch] configure success: $status');
+    }).catchError((e) {
+      print('[BackgroundFetch] configure ERROR: $e');
+    });
 
-void login() {
-
-  if(_canCheckBiometrics) _authenticate();
-  else{
-    _showLockScreen(
-      context,
-      opaque: false,
-      cancelButton: Text(
-        'Cancelar',
-        style: const TextStyle(fontSize: 16, color: Colors.white),
-        semanticsLabel: 'Cancelar',
-      ),
-    );
 
   }
+
+  void _onBackgroundFetch(String taskId) async {
+
+    // This is the fetch-event callback.
+    print("[BackgroundFetch] Event received: $taskId");
+    ClientBloc clientBloc;
+    var documentsDirectory = await getApplicationDocumentsDirectory();
+    var path = join(documentsDirectory.path, DATABASE_NAME);
+
+    if (await File(path).exists()) {
+      clientBloc= ClientBloc();
+      print("File exists");
+    } else {
+      print("File don't exists");
+    }
+
+
+
+
+    if (taskId == "flutter_background_fetch") {
+      // Schedule a one-shot task when fetch event received (for testing).
+      BackgroundFetch.scheduleTask(TaskConfig(
+          taskId: "com.transistorsoft.customtask",
+          delay: 5000,
+          periodic: false,
+          forceAlarmManager: true,
+          stopOnTerminate: false,
+          enableHeadless: true
+      ));
+    }
+
+    // IMPORTANT:  You must signal completion of your fetch task or the OS can punish your app
+    // for taking too long in the background.
+    BackgroundFetch.finish(taskId);
+  }
+
+  void login() {
+
+    if(_canCheckBiometrics) _authenticate();
+    else{
+      _showLockScreen(
+        context2,
+        opaque: false,
+        cancelButton: Text(
+          'Cancelar',
+          style: const TextStyle(fontSize: 16, color: Colors.white),
+          semanticsLabel: 'Cancelar',
+        ),
+      );
+
+    }
 
   }
 
@@ -141,6 +235,9 @@ void login() {
 
 
   }
+
+
+
 
   Future<void> _checkBiometrics() async {
     bool canCheckBiometrics;
@@ -181,7 +278,7 @@ void login() {
       _authorized = message;
     });
     if(authenticated){
-      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ClientManagerMainScreen()));
+      Navigator.push(context2, MaterialPageRoute(builder: (BuildContext context) => ClientManagerMainScreen()));
     }
   }
 
@@ -195,7 +292,7 @@ void login() {
     if (isAuthenticated) {
       setState(() {
         Navigator.pushReplacement(
-          context,
+          context2,
           MaterialPageRoute(builder: (context) => ClientManagerMainScreen()),
         );
       });
@@ -203,7 +300,7 @@ void login() {
   }
 
   _onPasscodeCancelled() {
-    Navigator.maybePop(context);
+    Navigator.maybePop(context2);
   }
 
   @override

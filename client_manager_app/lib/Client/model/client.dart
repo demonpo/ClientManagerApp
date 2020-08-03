@@ -1,3 +1,6 @@
+import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
+
 class Client {
   int id;
   //description is the text we see on
@@ -9,19 +12,30 @@ class Client {
   String email;
   String phoneNumber;
   String gender;
-  bool isDone;
+  bool isActive;
+  String inscriptionDate;
+  bool hasDebt;
+  double debtValue;
+  String deadLinePaymentDate;
+  double valorMensual;
+
   //When using curly braces { } we note dart that
   //the parameters are optional
   Client({
     this.id,
-    this.photoPath,
-    this.name,
-    this.lastName,
-    this.birthday,
-    this.email,
-    this.phoneNumber,
-    this.gender,
-    this.isDone = false});
+    this.photoPath ="",
+    this.name = "",
+    this.lastName = "",
+    this.birthday = "",
+    this.email = "",
+    this.phoneNumber = "",
+    this.gender = "",
+    this.inscriptionDate = "",
+    this.hasDebt = false,
+    @required this.debtValue ,
+    this.deadLinePaymentDate = "",
+    @required this.valorMensual,
+    this.isActive = true});
 
   factory Client.fromDatabaseJson(Map<String, dynamic> data) => Client(
     //This will be used to convert JSON objects that
@@ -35,10 +49,12 @@ class Client {
     email: data["email"],
     gender: data["gender"],
     phoneNumber: data["phoneNumber"],
-    //Since sqlite doesn't have boolean type for true/false
-    //we will 0 to denote that it is false
-    //and 1 for true
-    isDone: data['is_done'] == 0 ? false : true,
+    inscriptionDate: data["inscription_date"],
+    hasDebt: data["has_debt"] == 0 ? false : true,
+    debtValue: data["debt_value"],
+    deadLinePaymentDate: data["deadline_payment_date"],
+    valorMensual: data["valor_mensual"],
+    isActive: data['is_active'] == 0 ? false : true,
   );
   Map<String, dynamic> toDatabaseJson() => {
     //This will be used to convert Todo objects that
@@ -51,6 +67,11 @@ class Client {
     "email" : this.email,
     "gender" :  this.gender,
     "phoneNumber" : this.phoneNumber,
-    "is_done": this.isDone == false ? 0 : 1,
+    "inscription_date": this.inscriptionDate,
+    "has_debt": this.hasDebt,
+    "debt_value": this.debtValue,
+    "deadline_payment_date": this.deadLinePaymentDate,
+    "valor_mensual": this.valorMensual,
+    "is_active": this.isActive == false ? 0 : 1,
   };
 }
