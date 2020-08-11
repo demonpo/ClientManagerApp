@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:clientmanagerapp/Client/model/client.dart';
+import 'package:clientmanagerapp/Client/ui/widgets/client_abonos_container_for_scrollable_sheet.dart';
 import 'package:clientmanagerapp/Client/ui/widgets/client_details_container_for_scrollable_sheet.dart';
 import 'package:flutter/material.dart';
 
@@ -35,10 +36,7 @@ class _ClientDetailsScreen extends State<ClientDetailsScreen>{
 
     List<Widget> widgetList = [
       ClientDetailsContainer(client: widget.client,),
-      Container(
-        margin: EdgeInsets.only(top:60, left: 30),
-        child: Text("Abono"),
-      ),
+      ClientAbonosContainer(client:  widget.client,),
       Container(
         margin: EdgeInsets.only(top:60, left: 30),
         child: Text("Avisos"),

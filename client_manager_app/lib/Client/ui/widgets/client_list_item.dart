@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:clientmanagerapp/Client/model/client.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ClientListItem extends StatelessWidget{
@@ -99,6 +100,7 @@ class ClientListItem extends StatelessWidget{
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             clientPhoto,
             clientDetails,

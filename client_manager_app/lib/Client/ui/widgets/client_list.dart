@@ -1,3 +1,4 @@
+import 'package:clientmanagerapp/Abono/bloc/abono_bloc.dart';
 import 'package:clientmanagerapp/Client/model/client.dart';
 import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
 import 'package:clientmanagerapp/Client/ui/screens/client_details_screen.dart';
@@ -7,9 +8,11 @@ import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 
 class ClientList extends StatelessWidget{
   ClientBloc clientBloc;
+  AbonoBloc abonoBloc;
   @override
   Widget build(BuildContext context) {
     clientBloc = BlocProvider.of<ClientBloc>(context);
+    abonoBloc = BlocProvider.of<AbonoBloc>(context);
     clientBloc.getClients();
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
@@ -69,7 +72,10 @@ class ClientList extends StatelessWidget{
               onTap: (){
                 Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => BlocProvider(
                   bloc: clientBloc,
-                  child: ClientDetailsScreen(client: client,),
+                  child: BlocProvider(
+                    bloc: abonoBloc,
+                    child: ClientDetailsScreen(client: client,),
+                  ),
                 )));
               },
               onLongPress: (){
@@ -113,6 +119,7 @@ class ClientList extends StatelessWidget{
                     onTap: () {
                       Navigator.pop(context);
                       clientBloc.deleteClientById(clientId);
+                      abonoBloc.deleteAllAbonosByClientId(clientId);
                     }
                 ),
                 new ListTile(

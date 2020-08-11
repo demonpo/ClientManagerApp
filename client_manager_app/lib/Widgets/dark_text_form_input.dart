@@ -33,6 +33,7 @@ class DarkTextFormInput extends StatelessWidget{
         maxLines: maxLines,
         attribute: attribute,
         validators: validators,
+
         decoration: InputDecoration(
           icon: Icon(iconData),
           hintText: hintText,

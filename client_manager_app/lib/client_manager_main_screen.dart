@@ -1,3 +1,4 @@
+import 'package:clientmanagerapp/Abono/bloc/abono_bloc.dart';
 import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
 import 'package:clientmanagerapp/Client/ui/screens/client_list_screen.dart';
 import 'package:clientmanagerapp/Client/ui/widgets/list_settings.dart';
@@ -17,9 +18,14 @@ class _ClientManagerMainScreen extends State<ClientManagerMainScreen> {
   int indexTap = 0;
   final List<Widget> widgetsChildren = [
     BlocProvider(
-      bloc: ClientBloc(),
-      child: ClientListScreen(),
+      bloc: AbonoBloc(),
+      child: BlocProvider(
+        bloc: ClientBloc(),
+        child: ClientListScreen(),
+      ),
+
     ),
+
     //ClientListScreen(),
     Container(),
     ListSettings()
