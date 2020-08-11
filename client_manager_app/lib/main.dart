@@ -1,11 +1,11 @@
-import 'dart:async';
+import "dart:async";
 import 'dart:math';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
 import 'package:clientmanagerapp/client_manager_main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:local_auth/local_auth.dart';
+import "package:local_auth/local_auth.dart";
 import 'package:passcode_screen/circle.dart';
 import 'package:passcode_screen/keyboard.dart';
 import 'package:passcode_screen/passcode_screen.dart';
@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
     return MaterialApp(
-      title: '8 Armas Payment',
+      title: "8 Armas Payment",
       theme: ThemeData(
         primaryColor: Color(0xff202225),
         canvasColor: Color(0xffCCD4E0),
@@ -73,9 +73,6 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _canCheckBiometrics;
   final LocalAuthentication auth = LocalAuthentication();
 
-  List<BiometricType> _availableBiometrics;
-  String _authorized = 'No Autorizado';
-  bool _isAuthenticating = false;
   BuildContext context2;
 
 
@@ -106,15 +103,15 @@ class _MyHomePageState extends State<MyHomePage> {
               width: 200,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/icons/'
-                      'logo_2.png'),
+                  image: AssetImage("assets/icons/"
+                      "logo_2.png"),
                 ),
               ),
             ),
             Container(margin: const EdgeInsets.only(top: 100.0),
                 child:FloatingActionButton.extended(
                   onPressed: login,
-                  label: Text('Ingresar'),
+                  label: Text("Ingresar"),
                   icon: Icon(Icons.fingerprint),
                   backgroundColor: Color(0xff202225),
                 )
@@ -127,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> initPlatformState() async {
     // Configure BackgroundFetch.
-    BackgroundFetch.configure(BackgroundFetchConfig(
+    await BackgroundFetch.configure(BackgroundFetchConfig(
       minimumFetchInterval: 15,
       forceAlarmManager: false,
       stopOnTerminate: false,
@@ -151,12 +148,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
     // This is the fetch-event callback.
     print("[BackgroundFetch] Event received: $taskId");
-    ClientBloc clientBloc;
     var documentsDirectory = await getApplicationDocumentsDirectory();
     var path = join(documentsDirectory.path, DATABASE_NAME);
 
     if (await File(path).exists()) {
-      clientBloc= ClientBloc();
       print("File exists");
     } else {
       print("File don't exists");
@@ -167,7 +162,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (taskId == "flutter_background_fetch") {
       // Schedule a one-shot task when fetch event received (for testing).
-      BackgroundFetch.scheduleTask(TaskConfig(
+      await BackgroundFetch.scheduleTask(TaskConfig(
           taskId: "com.transistorsoft.customtask",
           delay: 5000,
           periodic: false,
@@ -184,15 +179,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void login() {
 
-    if(_canCheckBiometrics) _authenticate();
-    else{
+    if(_canCheckBiometrics) {
+      _authenticate();
+    } else{
       _showLockScreen(
         context2,
         opaque: false,
         cancelButton: Text(
-          'Cancelar',
+          "Cancelar",
           style: const TextStyle(fontSize: 16, color: Colors.white),
-          semanticsLabel: 'Cancelar',
+          semanticsLabel: "Cancelar",
         ),
       );
 
@@ -200,7 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   }
 
-  _showLockScreen(BuildContext context,
+  void _showLockScreen(BuildContext context,
       { bool opaque,
         CircleUIConfig circleUIConfig,
         KeyboardUIConfig keyboardUIConfig,
@@ -212,7 +208,7 @@ class _MyHomePageState extends State<MyHomePage> {
           opaque: opaque,
           pageBuilder: (context, animation, secondaryAnimation) => PasscodeScreen(
             title: Text(
-              'Ingrese código de acceso',
+              "Ingrese código de acceso",
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.white, fontSize: 28),
             ),
@@ -221,9 +217,9 @@ class _MyHomePageState extends State<MyHomePage> {
             passwordEnteredCallback: _onPasscodeEntered,
             cancelButton: cancelButton,
             deleteButton: Text(
-              'Borrar',
+              "Borrar",
               style: const TextStyle(fontSize: 16, color: Colors.white),
-              semanticsLabel: 'Borrar',
+              semanticsLabel: "Borrar",
             ),
             shouldTriggerVerification: _verificationNotifier.stream,
             backgroundColor: Colors.black.withOpacity(0.8),
@@ -251,11 +247,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _authenticate() async {
-    bool authenticated = false;
-    String _authorized = 'No Autorizado';
+    var authenticated = false;
     try {
       authenticated = await auth.authenticateWithBiometrics(
-          localizedReason: 'Escanea tu huella para autenticarte',
+          localizedReason: "Escanea tu huella para autenticarte",
           useErrorDialogs: true,
           stickyAuth: true);
     } on PlatformException catch (e) {
@@ -263,17 +258,15 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     if (!mounted) return;
 
-    final String message = authenticated ? 'Autorizado' : 'No Autorizado';
     setState(() {
-      _authorized = message;
     });
     if(authenticated){
-      Navigator.push(context2, MaterialPageRoute(builder: (BuildContext context) => ClientManagerMainScreen()));
+      await Navigator.push(context2, MaterialPageRoute(builder: (BuildContext context) => ClientManagerMainScreen()));
     }
   }
 
-  _onPasscodeEntered(String enteredPasscode) {
-    isAuthenticated = '123456' == enteredPasscode;
+  void _onPasscodeEntered(String enteredPasscode) {
+    isAuthenticated = "123456" == enteredPasscode;
     _verificationNotifier.add(isAuthenticated);
     if (isAuthenticated) {
       setState(() {
@@ -285,7 +278,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  _onPasscodeCancelled() {
+  void _onPasscodeCancelled() {
     Navigator.maybePop(context2);
   }
 

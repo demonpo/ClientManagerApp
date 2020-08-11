@@ -1,9 +1,6 @@
 import 'dart:async';
-import 'dart:io';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-final clientTABLE = 'Client';
+final clientTABLE = "Client";
 class DatabaseProvider {
   static final DatabaseProvider dbProvider = DatabaseProvider();
   Database _database;
@@ -13,10 +10,8 @@ class DatabaseProvider {
     return _database;
   }
   createDatabase() async {
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
     //"ReactiveTodo.db is our database instance name
-    String path = "assets/db8ArmasPayment.db";
-    var database = await openDatabase(path,
+    var database = await openDatabase( await getDatabasesPath()+"/assets/db8ArmasPayment.db",
         version: 2, onCreate: initDB, onUpgrade: onUpgrade);
     return database;
   }
@@ -26,9 +21,6 @@ class DatabaseProvider {
   }
   void initDB(Database database, int version) async {
     await database.execute(
-
-
-
         "CREATE TABLE $clientTABLE ("
         "id INTEGER PRIMARY KEY, "
         "name TEXT, "
