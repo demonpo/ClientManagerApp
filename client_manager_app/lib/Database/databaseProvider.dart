@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:sqflite/sqflite.dart';
 final clientTABLE = "Client";
+final configTABLE= "Config";
+final path_database="/assets/db8ArmasPayment.db";
+
 class DatabaseProvider {
   static final DatabaseProvider dbProvider = DatabaseProvider();
   Database _database;
@@ -9,9 +12,8 @@ class DatabaseProvider {
     _database = await createDatabase();
     return _database;
   }
-  createDatabase() async {
-    //"ReactiveTodo.db is our database instance name
-    var database = await openDatabase( await getDatabasesPath()+"/assets/db8ArmasPayment.db",
+  Future<Database> createDatabase() async {
+    var database = await openDatabase( await getDatabasesPath()+"$path_database",
         version: 2, onCreate: initDB, onUpgrade: onUpgrade);
     return database;
   }
@@ -51,6 +53,13 @@ class DatabaseProvider {
             "value real, "
             "client_id INTEGER, "
             "CONSTRAINT fk_Client_Abono FOREIGN KEY (client_id) REFERENCES Client (id)"
+            ");");
+
+    await database.execute(
+        "CREATE TABLE $configTABLE ("
+            "id INTEGER PRIMARY KEY, "
+            "creation_date TEXT, "
+            "pin TEXT"
             ");");
 
     await database.execute("CREATE TABLE Notification ("

@@ -1,5 +1,5 @@
 import "dart:async";
-import 'dart:math';
+import "package:shared_preferences/shared_preferences.dart";
 import 'package:background_fetch/background_fetch.dart';
 import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
 import 'package:clientmanagerapp/client_manager_main_screen.dart';
@@ -72,7 +72,8 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isAuthenticated = false;
   bool _canCheckBiometrics;
   final LocalAuthentication auth = LocalAuthentication();
-
+  var prefs;
+  String pin;
   BuildContext context2;
 
 
@@ -182,21 +183,94 @@ class _MyHomePageState extends State<MyHomePage> {
     if(_canCheckBiometrics) {
       _authenticate();
     } else{
-      _showLockScreen(
-        context2,
-        opaque: false,
-        cancelButton: Text(
-          "Cancelar",
-          style: const TextStyle(fontSize: 16, color: Colors.white),
-          semanticsLabel: "Cancelar",
-        ),
-      );
-
+        verifyPin();
     }
 
   }
 
-  void _showLockScreen(BuildContext context,
+  void verifyPin() async {
+    prefs = await SharedPreferences.getInstance();
+    pin = prefs.getString("pin") ?? "0";
+    print("PIN: $pin");
+    if(pin=="0") {
+      await inputDialog(context2);
+    }
+    else{
+      dialogPin();
+    }
+  }
+
+void dialogPin(){
+  _showLockScreen(
+    context2,
+    opaque: false,
+    cancelButton: Text(
+      "Cancelar",
+      style: const TextStyle(fontSize: 16, color: Colors.white),
+      semanticsLabel: "Cancelar",
+    ),
+  );
+}
+
+  Future<void> inputDialog(BuildContext context){
+    String new_pin;
+    var isPinValid = false;
+    var regExp = RegExp(r"^[0-9]{6}$",);
+
+    return showDialog<String>(
+      context: context,
+      barrierDismissible: false, // dialog is dismissible with a tap on the barrier
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Registre su pin de seguridad"),
+          content: Row(
+            children: <Widget>[
+              Expanded(
+                  child:TextField(
+                    autofocus: true,
+                    obscureText: true,
+                    maxLength: 6,
+                    keyboardType: TextInputType.number,
+                    onChanged: (value) {
+                      if(regExp.hasMatch(value)){
+                        isPinValid= true;
+                        new_pin=value;
+                      } else {
+                        isPinValid = false;
+                      }
+                    },
+                    decoration: InputDecoration(
+                        labelText: "El pin debe tener 6 dígitos",
+                    ),
+                  ))
+            ],
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Crear PIN"),
+              onPressed: () {
+                if(isPinValid) {
+                  prefs.setString("pin", new_pin);
+                  Navigator.pop(context);
+                  pin=new_pin;
+                  dialogPin();
+                }
+              },
+            ),
+            FlatButton(
+              child: Text("Cancelar"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
+
+ void _showLockScreen(BuildContext context,
       { bool opaque,
         CircleUIConfig circleUIConfig,
         KeyboardUIConfig keyboardUIConfig,
@@ -228,8 +302,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
 
         ));
-
-
   }
 
   Future<void> _checkBiometrics() async {
@@ -266,7 +338,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _onPasscodeEntered(String enteredPasscode) {
-    isAuthenticated = "123456" == enteredPasscode;
+    isAuthenticated = pin == enteredPasscode;
     _verificationNotifier.add(isAuthenticated);
     if (isAuthenticated) {
       setState(() {

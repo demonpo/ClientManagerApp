@@ -31,21 +31,21 @@ class DatabaseUpload {
   ga.FileList list;
   var signedIn = false;
 
-  void loginGoogle(){
-    _loginWithGoogle();
+  Future<void> loginGoogle() async {
+    await _loginWithGoogle();
   }
 
-  void uploadFiles(){
-    _uploadFileToGoogleDrive();
+  Future<void> uploadFiles() async {
+    await _uploadFileToGoogleDrive();
   }
 
 
-  void downloadFiles(){
-    _listGoogleDriveFiles();
+  Future<void> downloadFiles() async {
+    await _listGoogleDriveFiles();
   }
 
-  void logoutGoogle(){
-    _logoutFromGoogle();
+  Future<void> logoutGoogle() async {
+    await _logoutFromGoogle();
   }
 
   Future<bool> isSignedIn() async {
