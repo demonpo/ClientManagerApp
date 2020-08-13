@@ -1,7 +1,5 @@
 import "dart:async";
 import "package:shared_preferences/shared_preferences.dart";
-import 'package:background_fetch/background_fetch.dart';
-import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
 import 'package:clientmanagerapp/client_manager_main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,13 +7,11 @@ import "package:local_auth/local_auth.dart";
 import 'package:passcode_screen/circle.dart';
 import 'package:passcode_screen/keyboard.dart';
 import 'package:passcode_screen/passcode_screen.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
-import 'package:path/path.dart';
+
 
 final DATABASE_NAME="ReactiveClientManager2-3.db";
 
-void backgroundFetchHeadlessTask(String taskId) async {
+/*void backgroundFetchHeadlessTask(String taskId) async {
   print("[BackgroundFetch] Headless event received: $taskId");
   ClientBloc clientBloc;
   var documentsDirectory = await getApplicationDocumentsDirectory();
@@ -30,17 +26,14 @@ void backgroundFetchHeadlessTask(String taskId) async {
 
   BackgroundFetch.finish(taskId);
 
-}
+}*/
 
 void main() {
   runApp(MyApp());
-  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
+  //BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
 }
 
 class MyApp extends StatelessWidget {
-
-
-
 
   // This widget is the root of your application.
   @override
@@ -80,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    //initPlatformState();
   }
 
   @override
@@ -123,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<void> initPlatformState() async {
+ /* Future<void> initPlatformState() async {
     // Configure BackgroundFetch.
     await BackgroundFetch.configure(BackgroundFetchConfig(
       minimumFetchInterval: 15,
@@ -173,10 +166,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ));
     }
 
-    // IMPORTANT:  You must signal completion of your fetch task or the OS can punish your app
-    // for taking too long in the background.
+
     BackgroundFetch.finish(taskId);
-  }
+  }*/
 
   void login() {
 
