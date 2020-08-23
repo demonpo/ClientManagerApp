@@ -36,6 +36,19 @@ class ClientDao {
     return clients;
   }
 
+  Future getClientById(int cliendId) async{
+    final db = await dbProvider.database;
+
+    var result = await db.query(clientTABLE,
+        where: "id = ?", whereArgs: [cliendId]);
+
+    List<Client> clients = result.isNotEmpty
+        ? result.map((item) => Client.fromDatabaseJson(item)).toList()
+        : [];
+
+    return clients[0];
+  }
+
   //Update Client record
   Future<int> updateClient(Client client) async {
     final db = await dbProvider.database;

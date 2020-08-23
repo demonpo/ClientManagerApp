@@ -13,7 +13,7 @@ class AbonoRepository {
 
   Future insertAbono(Abono abono) => abonoDao.createAbono(abono);
 
-  Future updateClient(Abono abono) => abonoDao.updateAbono(abono);
+  Future updateAbono(Abono abono) => abonoDao.updateAbono(abono);
 
   Future deleteAbonoById(int id) => abonoDao.deleteAbono(id);
 

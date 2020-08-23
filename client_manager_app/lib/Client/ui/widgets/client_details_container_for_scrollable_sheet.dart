@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:clientmanagerapp/Client/model/client.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ClientDetailsContainer extends StatelessWidget{
@@ -37,6 +38,11 @@ class ClientDetailsContainer extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    DateTime inscriptionDate = DateTime.parse(client.inscriptionDate);
+    DateTime deadlineDate = DateTime.parse(client.deadLinePaymentDate);
+    DateTime birthday = DateTime.parse(client.birthday);
+    DateFormat formatter = DateFormat('yyyy-MM-dd');
+    
     double scrollableHeight = MediaQuery.of(context).size.height;
     double titleHeight = 100;
     return Column(
@@ -111,6 +117,22 @@ class ClientDetailsContainer extends StatelessWidget{
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    Text("Cedula:", style: TextStyle(fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.grey[500]),),
+                    Text(client.cedula, style: TextStyle(fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white),)
+                  ],
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 32),
+              ),
+
+              Container(
+                margin: EdgeInsets.only(bottom: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
                     Text("Email:", style: TextStyle(fontSize: 15,
                         fontWeight: FontWeight.w700,
                         color: Colors.grey[500]),),
@@ -129,7 +151,7 @@ class ClientDetailsContainer extends StatelessWidget{
                     Text("Fecha de nacimiento:", style: TextStyle(fontSize: 15,
                         fontWeight: FontWeight.w700,
                         color: Colors.grey[500]),),
-                    Text(client.birthday, style: TextStyle(fontSize: 20,
+                    Text(formatter.format(birthday), style: TextStyle(fontSize: 20,
                         fontWeight: FontWeight.w700,
                         color: Colors.white),)
 
@@ -161,7 +183,7 @@ class ClientDetailsContainer extends StatelessWidget{
                     Text("Fecha de inscripcion:", style: TextStyle(fontSize: 15,
                         fontWeight: FontWeight.w700,
                         color: Colors.grey[500]),),
-                    Text(client.inscriptionDate, style: TextStyle(fontSize: 20,
+                    Text(formatter.format(inscriptionDate), style: TextStyle(fontSize: 20,
                         fontWeight: FontWeight.w700,
                         color: Colors.white),)
 
@@ -178,7 +200,7 @@ class ClientDetailsContainer extends StatelessWidget{
                     Text("Fecha limite de pago mensual:", style: TextStyle(fontSize: 15,
                         fontWeight: FontWeight.w700,
                         color: Colors.grey[500]),),
-                    Text(client.deadLinePaymentDate, style: TextStyle(fontSize: 20,
+                    Text(formatter.format(deadlineDate), style: TextStyle(fontSize: 20,
                         fontWeight: FontWeight.w700,
                         color: Colors.white),)
 
@@ -198,6 +220,23 @@ class ClientDetailsContainer extends StatelessWidget{
                     Text(client.valorMensual.toString(), style: TextStyle(fontSize: 20,
                         fontWeight: FontWeight.w700,
                         color: Colors.white),)
+
+                  ],
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 32),
+              ),
+
+              Container(
+                margin: EdgeInsets.only(bottom: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text("Deuda:", style: TextStyle(fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.grey[500]),),
+                    Text(client.debtValue.toString(), style: TextStyle(fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: client.debtValue.isNegative ? Colors.green: Colors.red),)
 
                   ],
                 ),

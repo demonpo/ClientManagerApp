@@ -31,6 +31,7 @@ class DatabaseProvider {
 
         "CREATE TABLE $clientTABLE ("
         "id INTEGER PRIMARY KEY, "
+        "cedula TEXT, "
         "name TEXT, "
         "photoPath TEXT, "
         "lastName TEXT, "

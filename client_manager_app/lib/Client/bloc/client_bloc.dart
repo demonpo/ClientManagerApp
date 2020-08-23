@@ -26,9 +26,17 @@ class ClientBloc extends Bloc{
     _clientController.sink.add(await _clientRepository.getAllClients(query: query));
   }
 
+  getAllClients() async{
+    return await _clientRepository.getAllClients();
+  }
+
   addClient(Client client) async {
     await _clientRepository.insertClient(client);
     getClients();
+  }
+
+  getClientById(int clientId) async {
+    await _clientRepository.getClientById(clientId);
   }
 
   updateClient(Client client) async {

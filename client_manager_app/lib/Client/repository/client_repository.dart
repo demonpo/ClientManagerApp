@@ -9,6 +9,8 @@ class ClientRepository {
 
   Future getAllClients({String query}) => clientDao.getClients(query: query);
 
+  Future getClientById(int clientId) => clientDao.getClientById(clientId);
+
   Future insertClient(Client client) => clientDao.createClient(client);
 
   Future updateClient(Client client) => clientDao.updateClient(client);

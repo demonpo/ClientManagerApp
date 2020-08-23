@@ -1,20 +1,22 @@
 
-import 'package:clientmanagerapp/Abono/model/Abono.dart';
 import 'package:flutter/material.dart';
+import "package:clientmanagerapp/Notification/model/Notification.dart" as notif;
 
-class AbonoListItem extends StatelessWidget{
-  Abono abono;
+class NotificationListItem extends StatelessWidget{
+  notif.Notification notification;
   VoidCallback onLongPress;
 
 
-  AbonoListItem({this.abono, this.onLongPress});
+  NotificationListItem({this.notification, this.onLongPress});
   @override
   Widget build(BuildContext context) {
+    DateTime notificationCreationDate = DateTime.parse(notification.creationDate);
+
 
     return InkWell(
       onLongPress: onLongPress,
       child: Container(
-        height: 80,
+        height: 120,
         padding: EdgeInsets.only(
           left: 15,
           right: 15,
@@ -35,13 +37,13 @@ class AbonoListItem extends StatelessWidget{
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text("Dia de abono:",
+                Text("Notificación creada el:",
                   style: TextStyle(
                     fontSize: 15,
                     color: Colors.white,
                   ),
                 ),
-                Text(abono.creationDate,
+                Text("${notificationCreationDate.year}-${notificationCreationDate.month}-${notificationCreationDate.day}",
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
@@ -53,13 +55,24 @@ class AbonoListItem extends StatelessWidget{
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text("valor abonado:",
+                Text("Título:",
                   style: TextStyle(
                     fontSize: 15,
                     color: Colors.white,
                   ),
                 ),
-                Text(abono.value.toString(),
+                Text(notification.title,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Color(0xff43b581),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(notification.details,
                   style: TextStyle(
                     fontSize: 15,
                     color: Color(0xff43b581),

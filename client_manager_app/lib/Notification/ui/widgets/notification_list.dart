@@ -1,22 +1,26 @@
 import 'package:clientmanagerapp/Abono/bloc/abono_bloc.dart';
-import 'package:clientmanagerapp/Client/model/client.dart';
 import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
+import 'package:clientmanagerapp/Client/model/client.dart';
 import 'package:clientmanagerapp/Client/ui/screens/client_details_screen.dart';
-import 'package:clientmanagerapp/Client/ui/widgets/client_list_item.dart';
 import 'package:clientmanagerapp/Notification/bloc/notification_bloc.dart';
+import 'package:clientmanagerapp/Notification/model/Notification.dart' as notif;
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 
-class ClientList extends StatelessWidget{
+import 'notification_list_item.dart';
+
+class NotificationList extends StatelessWidget{
   ClientBloc clientBloc;
   AbonoBloc abonoBloc;
   NotificationBloc notificationBloc;
+
   @override
   Widget build(BuildContext context) {
+
     clientBloc = BlocProvider.of<ClientBloc>(context);
     abonoBloc = BlocProvider.of<AbonoBloc>(context);
     notificationBloc = BlocProvider.of<NotificationBloc>(context);
-    clientBloc.getClients();
+    notificationBloc.getNotifications();
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
@@ -28,23 +32,23 @@ class ClientList extends StatelessWidget{
       ),
 
       child: StreamBuilder(
-        stream: clientBloc.clients,
-        builder: (context, AsyncSnapshot<List<Client>> snapshot){
+        stream: notificationBloc.notifications,
+        builder: (context, AsyncSnapshot<List<notif.Notification>> snapshot){
           switch (snapshot.connectionState){
             case ConnectionState.waiting:
-              print("CLIENTLIST: WAITING");
+              print("NOTIFICATIONLIST: WAITING");
               return Center(child: CircularProgressIndicator(),);
             case ConnectionState.none:
-              print("CLIENTLIST: NONE");
+              print("NOTIFICATIONLIST: NONE");
               return Center(child: CircularProgressIndicator(),);
             case ConnectionState.active:
-              print("CLIENTLIST: ACTIVE");
-              return _getClientListView(snapshot);
+              print("NOTIFICATIONLIST: ACTIVE");
+              return _getNotificationListView(snapshot);
             case ConnectionState.done:
-              print("CLIENTLIST: DONE");
-              return _getClientListView(snapshot);
+              print("NOTIFICATIONLIST: DONE");
+              return _getNotificationListView(snapshot);
             default:
-              print("CLIENTLIST: DEFAULT");
+              print("NOTIFICATIONLIST: DEFAULT");
               return null;
 
           }
@@ -61,19 +65,20 @@ class ClientList extends StatelessWidget{
   }
 
 
-  _getClientListView(AsyncSnapshot<List<Client>> snapshot){
+  _getNotificationListView(AsyncSnapshot<List<notif.Notification>> snapshot){
     if(snapshot.hasData){
       print("HAS DATA");
       return snapshot.data.length != 0
           ? ListView.builder(
           itemCount: snapshot.data.length,
           itemBuilder: (context, itemPosition) {
-            Client client = snapshot.data[itemPosition];
-            print("${client.photoPath} ${client.name}");
-            return ClientListItem(
-              client: client,
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => BlocProvider(
+            notif.Notification notification = snapshot.data[itemPosition];
+            print("${notification.title} ${notification.details}");
+            return NotificationListItem(
+              notification: notification,
+              onLongPress: () async{
+                Client client = await clientBloc.getClientById(notification.clientId);
+                await Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => BlocProvider(
                   bloc: clientBloc,
                   child: BlocProvider(
                     bloc: abonoBloc,
@@ -81,16 +86,13 @@ class ClientList extends StatelessWidget{
                       bloc: notificationBloc,
                       child: ClientDetailsScreen(client: client,),
                     ),
-                  ),
-                )));
-              },
-              onLongPress: (){
-                _settingModalBottomSheet(context,client.id);
+                  )
+                )
+                )
+                );
               },
             );
           }
-
-
       )
 
       //Si no hay datos en la lista se preseneta este contenedor
@@ -111,34 +113,4 @@ class ClientList extends StatelessWidget{
 
   }
 
-  void _settingModalBottomSheet(context, int clientId){
-    showModalBottomSheet(
-
-        context: context,
-        builder: (BuildContext bc){
-          return Container(
-            child: new Wrap(
-              children: <Widget>[
-                new ListTile(
-                    leading: new Icon(Icons.delete),
-                    title: new Text('Eliminar'),
-                    onTap: () {
-                      Navigator.pop(context);
-                      clientBloc.deleteClientById(clientId);
-                      abonoBloc.deleteAllAbonosByClientId(clientId);
-                      notificationBloc.deleteAllnotificationsByClientId(clientId);
-                    }
-                ),
-                new ListTile(
-                  leading: new Icon(Icons.edit),
-                  title: new Text('Editar'),
-                  onTap: () => {},
-                ),
-              ],
-            ),
-          );
-        }
-    );
-  }
-
-  }
+}

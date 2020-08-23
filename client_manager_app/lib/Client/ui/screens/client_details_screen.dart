@@ -1,14 +1,19 @@
 import 'dart:io';
 
+import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
 import 'package:clientmanagerapp/Client/model/client.dart';
 import 'package:clientmanagerapp/Client/ui/widgets/client_abonos_container_for_scrollable_sheet.dart';
 import 'package:clientmanagerapp/Client/ui/widgets/client_details_container_for_scrollable_sheet.dart';
+import 'package:clientmanagerapp/Client/ui/widgets/client_notifications_container_for_scrollable_sheet.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 
 
 class ClientDetailsScreen extends StatefulWidget{
 
   Client client;
+  ClientBloc clientBloc;
   ClientDetailsScreen({this.client});
 
   @override
@@ -30,17 +35,82 @@ class _ClientDetailsScreen extends State<ClientDetailsScreen>{
 
   }
 
+  _createAlertDialog(BuildContext context){
+
+    return showDialog(context: context, builder: (context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        ),
+        backgroundColor: Color(0xff292b2f),
+        title: Text(widget.client.isActive ? "Desactivar cliente" : "Reactivar cliente",
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        content: Container(
+          child: Text(widget.client.isActive ? "Seguro quieres desactivar a este cliente?" : "Seguro quieres reactivar a este cliente?",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ),
+        actions: <Widget>[
+          MaterialButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            ),
+            color: Color(0xff43b581),
+            child: Text("Si",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            onPressed: (){
+              if(widget.client.isActive){
+                widget.client.setAsInactive();
+                widget.clientBloc.updateClient(widget.client);
+              }
+              else{
+                widget.client.renovarSubscripcion();
+                widget.clientBloc.updateClient(widget.client);
+              }
+              setState(() {
+
+              });
+              Navigator.pop(context);
+            },
+          ),
+          MaterialButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            ),
+            color: Colors.red,
+            child: Text("No",
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            onPressed: (){
+              Navigator.pop(context);
+            },
+          )
+        ],
+      );
+    });
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
+    widget.clientBloc = BlocProvider.of<ClientBloc>(context);
+    final hasPhoto = widget.client.photoPath == "" ? false : true;
 
     List<Widget> widgetList = [
       ClientDetailsContainer(client: widget.client,),
       ClientAbonosContainer(client:  widget.client,),
-      Container(
-        margin: EdgeInsets.only(top:60, left: 30),
-        child: Text("Avisos"),
-      )
+      ClientNotificationsContainer(client: widget.client,),
     ];
 
     return Scaffold(
@@ -63,7 +133,9 @@ class _ClientDetailsScreen extends State<ClientDetailsScreen>{
                       Container(
                         child: CircleAvatar(
                           radius: 30,
-                          backgroundImage: FileImage(File(widget.client.photoPath)),
+                          backgroundColor: Color(0xff43b581),
+                          backgroundImage: hasPhoto? FileImage(File(widget.client.photoPath)) : null,
+                          child: !hasPhoto ? Icon(Icons.person,color: Colors.white,):Container(),
                         ),
                         margin: EdgeInsets.only(right: 15),
                       ),
@@ -157,7 +229,37 @@ class _ClientDetailsScreen extends State<ClientDetailsScreen>{
 
 
                     ],
-                  )
+                  ),
+                  InkWell(
+                    onTap: (){
+                      _createAlertDialog(context);
+                      setState(() {
+
+                      });
+                    },
+                    child: Container(
+                      height: 50,
+                      width: MediaQuery.of(context).size.width,
+                      margin: EdgeInsets.only(
+                        top: 10,
+                        bottom: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(18)),
+                        color: widget.client.isActive ? Colors.red : Color(0xff43b581),
+                      ),
+                      child: Center(
+                        child: Text(widget.client.isActive? "Desactivar cliente": "Activar cliente",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                    ),
+
+                  ),
 
                 ],
               ),

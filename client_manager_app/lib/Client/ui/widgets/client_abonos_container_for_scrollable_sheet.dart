@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:clientmanagerapp/Abono/bloc/abono_bloc.dart';
 import 'package:clientmanagerapp/Abono/model/Abono.dart';
 import 'package:clientmanagerapp/Abono/ui/widgets/abono_list.dart';
+import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
 import 'package:clientmanagerapp/Client/model/client.dart';
 import 'package:clientmanagerapp/Widgets/dark_text_form_input.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ class ClientAbonosContainer extends StatelessWidget{
   Client client;
 
   AbonoBloc abonoBloc;
+  ClientBloc clientBloc;
   ClientAbonosContainer({@required this.client});
 
 
@@ -72,6 +74,8 @@ class ClientAbonosContainer extends StatelessWidget{
                   value: double.parse(_fbKey.currentState.value['abono']),
                   clientId: client.id,
                 ));
+                client.debtValue = client.debtValue - double.parse(_fbKey.currentState.value['abono']);
+                clientBloc.updateClient(client);
                 Navigator.pop(context);
               }
               else {
@@ -89,9 +93,11 @@ class ClientAbonosContainer extends StatelessWidget{
   }
 
 
+
   @override
   Widget build(BuildContext context) {
     abonoBloc = BlocProvider.of<AbonoBloc>(context);
+    clientBloc = BlocProvider.of<ClientBloc>(context);
 
     double scrollableHeight = MediaQuery.of(context).size.height;
     double titleHeight = 100;

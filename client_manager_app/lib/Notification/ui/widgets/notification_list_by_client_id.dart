@@ -1,23 +1,21 @@
-import 'package:clientmanagerapp/Abono/bloc/abono_bloc.dart';
-import 'package:clientmanagerapp/Abono/model/Abono.dart';
 import 'package:clientmanagerapp/Client/model/client.dart';
+import 'package:clientmanagerapp/Notification/bloc/notification_bloc.dart';
+import 'package:clientmanagerapp/Notification/model/Notification.dart' as notif;
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 
-import 'abono_list_item.dart';
+import 'notification_list_item.dart';
 
-
-
-class AbonoList extends StatelessWidget{
-  AbonoBloc abonoBloc;
+class NotificationListByClientId extends StatelessWidget{
+  NotificationBloc notificationBloc;
   Client client;
-  List<Abono> abonosById;
-  AbonoList({this.client});
+  List<notif.Notification> notificationsById;
+  NotificationListByClientId({this.client});
 
   @override
   Widget build(BuildContext context) {
-    abonoBloc = BlocProvider.of<AbonoBloc>(context);
-    abonoBloc.getAbonos();
+    notificationBloc = BlocProvider.of<NotificationBloc>(context);
+    notificationBloc.getNotifications();
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
@@ -25,25 +23,24 @@ class AbonoList extends StatelessWidget{
       width: screenWidth,
       height: screenHeight,
 
-
       child: StreamBuilder(
-        stream: abonoBloc.abonos,
-        builder: (context, AsyncSnapshot<List<Abono>> snapshot){
+        stream: notificationBloc.notifications,
+        builder: (context, AsyncSnapshot<List<notif.Notification>> snapshot){
           switch (snapshot.connectionState){
             case ConnectionState.waiting:
-              print("ABONOLIST: WAITING");
+              print("NOTIFICATIONLIST: WAITING");
               return Center(child: CircularProgressIndicator(),);
             case ConnectionState.none:
-              print("ABONOLIST: NONE");
+              print("NOTIFICATIONLIST: NONE");
               return Center(child: CircularProgressIndicator(),);
             case ConnectionState.active:
-              print("ABONOLIST: ACTIVE");
-              return _getAbonoListView(snapshot);
+              print("NOTIFICATIONLIST: ACTIVE");
+              return _getNotificationListView(snapshot);
             case ConnectionState.done:
-              print("ABONOLIST: DONE");
-              return _getAbonoListView(snapshot);
+              print("NOTIFICATIONLIST: DONE");
+              return _getNotificationListView(snapshot);
             default:
-              print("ABONOLIST: DEFAULT");
+              print("NOTIFICATIONLIST: DEFAULT");
               return null;
 
           }
@@ -54,27 +51,23 @@ class AbonoList extends StatelessWidget{
   }
 
 
-  _getAbonoListView(AsyncSnapshot<List<Abono>> snapshot) {
+  _getNotificationListView(AsyncSnapshot<List<notif.Notification>> snapshot) {
     if(snapshot.hasData){
       print("HAS DATA");
 
       if(snapshot.data.length != 0){
-        abonosById = snapshot.data.where((element) => element.clientId == client.id).toList();
-        abonosById.forEach((element) {
-          print("ABONOCREATIONDATE${element.creationDate} ${element.value} CLIENTID:${element.clientId}");
-        });
+        notificationsById = snapshot.data.where((element) => element.clientId == client.id).toList();
         return ListView.builder(
-          itemCount: abonosById.length,
+            itemCount: notificationsById.length,
             itemBuilder: (context, itemPosition) {
-          Abono abono = abonosById[itemPosition];
-          print("ABONOCREATIONDATE${abono.creationDate} ${abono.value} ABONOID:${abono.clientId}");
-          return AbonoListItem(
-            abono: abono,
-            onLongPress: (){
-              _settingModalBottomSheet(context,abono.id);
-            },
-          );
-        }
+              notif.Notification notification = notificationsById[itemPosition];
+              return NotificationListItem(
+                notification: notification,
+                onLongPress: (){
+                  _settingModalBottomSheet(context,notification.id);
+                },
+              );
+            }
         );
       }
       else{
@@ -92,7 +85,7 @@ class AbonoList extends StatelessWidget{
   }
 
 
-  void _settingModalBottomSheet(context, int abonoId){
+  void _settingModalBottomSheet(context, int notificationId){
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc){
@@ -104,7 +97,7 @@ class AbonoList extends StatelessWidget{
                     title: Text('Eliminar'),
                     onTap: () {
                       Navigator.pop(context);
-                      abonoBloc.deleteAbonoById(abonoId);
+                      notificationBloc.deleteNotificationById(notificationId);
                     }
                 ),
 

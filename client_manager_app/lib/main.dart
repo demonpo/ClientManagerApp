@@ -1,7 +1,13 @@
 import 'dart:async';
+import 'dart:isolate';
 import 'dart:math';
 import 'package:background_fetch/background_fetch.dart';
+import 'package:clientmanagerapp/Abono/bloc/abono_bloc.dart';
 import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
+import 'package:clientmanagerapp/Client/model/client.dart';
+import 'package:clientmanagerapp/Notification/bloc/notification_bloc.dart';
+import 'package:clientmanagerapp/Notification/model/Notification.dart' as notif;
+import 'package:clientmanagerapp/Notification/utility/notification_helper.dart';
 import 'package:clientmanagerapp/client_manager_main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,29 +18,115 @@ import 'package:passcode_screen/passcode_screen.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'package:path/path.dart';
+import 'package:workmanager/workmanager.dart';
 
 final DATABASE_NAME="ReactiveClientManager2-3.db";
 
-void backgroundFetchHeadlessTask(String taskId) async {
-  print("[BackgroundFetch] Headless event received: $taskId");
-  ClientBloc clientBloc;
-  var documentsDirectory = await getApplicationDocumentsDirectory();
-  var path = join(documentsDirectory.path, DATABASE_NAME);
 
-  if (await File(path).exists()) {
-    clientBloc= ClientBloc();
-    print("File exists");
-  } else {
-    print("File don't exists");
-  }
+void callbackDispatcher() {
+  Workmanager.executeTask((task, inputData) async {
+    print("Native called background task");
+    switch (task) {
+      case "checkDatabase":
+        print(" was executed. inputData = $inputData");
+        ClientBloc clientBloc;
+        NotificationBloc notificationBloc;
+        var documentsDirectory = await getApplicationDocumentsDirectory();
+        var path = join(documentsDirectory.path, DATABASE_NAME);
 
-  BackgroundFetch.finish(taskId);
+        if (await File(path).exists()) {
+          clientBloc= ClientBloc();
+          notificationBloc = NotificationBloc();
+          /*
+          //Solo para testeo se creara este cliente con deuda
+          clientBloc.addClient(Client(
+            cedula: "0923040885",
+            valorMensual: 40,
+            debtValue: 40,
+            phoneNumber: "593098",
+            birthday: DateTime.now().toString(),
+            gender: "macho",
+            email: "machoman@gmail.com",
+            lastName: "Gibson",
+            name: "Mel",
+            deadLinePaymentDate: DateTime.now().subtract(Duration(days: 1)).toString(),
+            hasDebt: false,
+            inscriptionDate: DateTime.now().subtract(Duration(days: 31)).toString(),
+            isActive: true,
+            photoPath: "",
 
+          ));
+
+          //Solo para testeo se creara este cliente con deuda y listo para renovar
+          clientBloc.addClient(Client(
+            cedula: "0923040885",
+            valorMensual: 40,
+            debtValue: -20,
+            phoneNumber: "593098",
+            birthday: DateTime.now().toString(),
+            gender: "macho",
+            email: "machoman@gmail.com",
+            lastName: "quinquira",
+            name: "Chiqui",
+            deadLinePaymentDate: DateTime.now().subtract(Duration(days: 1)).toString(),
+            hasDebt: false,
+            inscriptionDate: DateTime.now().subtract(Duration(days: 31)).toString(),
+            isActive: true,
+            photoPath: "",
+
+          ));
+          */
+          List<Client> clients = await clientBloc.getAllClients();
+          bool notificationSent = false;
+          await clients.forEach(await (Client client) async {
+            print("antes del if en el proceso del background");
+            if(DateTime.now().isAfter(DateTime.parse(client.deadLinePaymentDate)) && client.debtValue > 0  && client.hasDebt == false && client.isActive){
+              print("SE GENERO NOTIFICACION DEL CLIENTE ${client.name} ${client.lastName}");
+              client.setAsDebtor();
+              clientBloc.updateClient(client);
+              await notificationBloc.addNotification(
+                await notif.Notification(
+                  creationDate: DateTime.now().toString(),
+                  clientId: client.id,
+                  title: "Deuda!!",
+                  details: "El cliente ${client.name} ${client.lastName} tiene una deuda de ${client.debtValue}",
+                ),
+              );
+              if(!notificationSent){
+                NotificationHelper().showNotificationBtweenInterval(title: "Deudas!", details: "Hay deudas pendientes!");
+                notificationSent = true;
+              }
+
+            }
+            else if (DateTime.now().isAfter(DateTime.parse(client.deadLinePaymentDate)) && client.debtValue <= 0){
+              client.renovarSubscripcion();
+              clientBloc.updateClient(client);
+            }
+          });
+
+          await notificationBloc.getNotifications();
+          print("File exists");
+        } else {
+          print("File don't exists");
+        }
+        break;
+    }
+    return Future.value(true);
+  });
 }
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  //final int helloAlarmID = 0;
+  //await AndroidAlarmManager.initialize();
+  //await AndroidAlarmManager.periodic(const Duration(seconds: 10), helloAlarmID, printHello, wakeup: true,);
+  Workmanager.initialize(
+      callbackDispatcher, // The top level function, aka callbackDispatcher
+      isInDebugMode: false// If enabled it will post a notification whenever the task is running. Handy for debugging tasks
+  );
+  Workmanager.registerPeriodicTask("1", "checkDatabase",frequency: Duration(minutes: 15),);
   runApp(MyApp());
-  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
+
 }
 
 class MyApp extends StatelessWidget {
@@ -82,11 +174,12 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    //initPlatformState();
   }
 
   @override
   Widget build(BuildContext context) {
+
     context2 = context;
     _checkBiometrics();
     return Scaffold(
@@ -125,64 +218,11 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<void> initPlatformState() async {
-    // Configure BackgroundFetch.
-    BackgroundFetch.configure(BackgroundFetchConfig(
-      minimumFetchInterval: 15,
-      forceAlarmManager: false,
-      stopOnTerminate: false,
-      startOnBoot: true,
-      enableHeadless: true,
-      requiresBatteryNotLow: false,
-      requiresCharging: false,
-      requiresStorageNotLow: false,
-      requiresDeviceIdle: false,
-      requiredNetworkType: NetworkType.NONE,
-    ), _onBackgroundFetch).then((int status) {
-      print('[BackgroundFetch] configure success: $status');
-    }).catchError((e) {
-      print('[BackgroundFetch] configure ERROR: $e');
-    });
 
 
-  }
-
-  void _onBackgroundFetch(String taskId) async {
-
-    // This is the fetch-event callback.
-    print("[BackgroundFetch] Event received: $taskId");
-    ClientBloc clientBloc;
-    var documentsDirectory = await getApplicationDocumentsDirectory();
-    var path = join(documentsDirectory.path, DATABASE_NAME);
-
-    if (await File(path).exists()) {
-      clientBloc= ClientBloc();
-      print("File exists");
-    } else {
-      print("File don't exists");
-    }
-
-
-
-
-    if (taskId == "flutter_background_fetch") {
-      // Schedule a one-shot task when fetch event received (for testing).
-      BackgroundFetch.scheduleTask(TaskConfig(
-          taskId: "com.transistorsoft.customtask",
-          delay: 5000,
-          periodic: false,
-          forceAlarmManager: true,
-          stopOnTerminate: false,
-          enableHeadless: true
-      ));
-    }
-
-    // IMPORTANT:  You must signal completion of your fetch task or the OS can punish your app
-    // for taking too long in the background.
-    BackgroundFetch.finish(taskId);
-  }
 
   void login() {
+    Workmanager.registerOneOffTask("2", "checkDatabase",);
 
     if(_canCheckBiometrics) _authenticate();
     else{

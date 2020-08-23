@@ -115,6 +115,17 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
                       ),
                       DarkTextFormInput(
                         maxLines: 1,
+                        attribute: "cedula",
+                        hintText: "Ingrese numero de cedula",
+                        errorText: "Espacio vacio",
+                        iconData: Icons.perm_identity,
+                        validators: [
+                          FormBuilderValidators.numeric(),
+                          FormBuilderValidators.required(),
+                        ],
+                      ),
+                      DarkTextFormInput(
+                        maxLines: 1,
                         attribute: "email",
                         hintText: "Ingrese email",
                         errorText: "Espacio vacio",
@@ -137,6 +148,14 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
                         labelText: "Fecha de nacimiento",
                       ),
 
+                      DarkTimePickerForm(
+                        attribute: "inscriptionDate",
+                        labelText: "Fecha de inscripcion",
+                        validators: [
+                          FormBuilderValidators.required()
+                        ],
+                      ),
+
                       DarkTextFormInput(
                         maxLines: 1,
                         attribute: "mensualidad",
@@ -156,33 +175,37 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
             ),
             Row(
               children: <Widget>[
+                SizedBox(
+                  width: 10,
+                ),
                 Expanded(
                   child: MaterialButton(
-                    color: Theme.of(context).accentColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    color: Colors.green,
                     child: Text(
-                      'Submit',
+                      'Aceptar',
                       style: TextStyle(color: Colors.white),
                     ),
                     onPressed: () {
                       if (_fbKey.currentState.saveAndValidate()) {
-                        var inscriptionDate = DateTime.now();
-                        print(inscriptionDate.toIso8601String());
+                        var inscriptionDate = DateTime.parse(_fbKey.currentState.value['inscriptionDate'].toString());
                         var dealinePaymentDate = inscriptionDate.add(Duration(days: 30));
-                        print(dealinePaymentDate.toIso8601String());
                         print(_fbKey
                             .currentState.value['nombres'].runtimeType);
                         print(_fbKey.currentState.value);
-                        print('validation OK');
                         print(darkImagePicker.image == null ? "" : darkImagePicker.image.path);
                         clientBloc.addClient(Client(
                           photoPath: darkImagePicker.image == null ? "" : darkImagePicker.image.path,
                           name: _fbKey.currentState.value['nombres'],
                           lastName: _fbKey.currentState.value['apellidos'],
+                          cedula: _fbKey.currentState.value['cedula'],
                           email: _fbKey.currentState.value['email'],
                           phoneNumber: darkPhoneInputForm2.phoneNumber,
                           gender: _fbKey.currentState.value['genero'],
                           birthday: _fbKey.currentState.value['birthday'].toString(),
-                          inscriptionDate: inscriptionDate.toString(),
+                          inscriptionDate:  _fbKey.currentState.value['inscriptionDate'].toString(),
                           deadLinePaymentDate: dealinePaymentDate.toString(),
                           debtValue: double.parse(_fbKey.currentState.value['mensualidad']),
                           valorMensual:  double.parse(_fbKey.currentState.value['mensualidad'])
@@ -203,15 +226,21 @@ class _ClientRegisterForm extends State<ClientRegisterForm>{
                 ),
                 Expanded(
                   child: MaterialButton(
-                    color: Theme.of(context).accentColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    color: Colors.red,
                     child: Text(
-                      'Reset',
+                      'Resetear',
                       style: TextStyle(color: Colors.white),
                     ),
                     onPressed: () {
                       _fbKey.currentState.reset();
                     },
                   ),
+                ),
+                SizedBox(
+                  width: 10,
                 ),
               ],
             ),

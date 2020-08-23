@@ -5,6 +5,7 @@ class Client {
   int id;
   //description is the text we see on
   //main screen card text
+  String cedula;
   String photoPath;
   String name;
   String lastName;
@@ -15,14 +16,15 @@ class Client {
   bool isActive;
   String inscriptionDate;
   bool hasDebt;
-  double debtValue;
+  num debtValue;
   String deadLinePaymentDate;
-  double valorMensual;
+  num valorMensual;
 
   //When using curly braces { } we note dart that
   //the parameters are optional
   Client({
     this.id,
+    this.cedula,
     this.photoPath ="",
     this.name = "",
     this.lastName = "",
@@ -42,6 +44,7 @@ class Client {
     //are coming from querying the database and converting
     //it into a Client object
     id: data['id'],
+    cedula: data["cedula"],
     photoPath: data["photoPath"],
     name: data['name'],
     lastName: data["lastName"],
@@ -60,6 +63,7 @@ class Client {
     //This will be used to convert Todo objects that
     //are to be stored into the datbase in a form of JSON
     "id": this.id,
+    "cedula" : this.cedula,
     "photoPath" : this.photoPath,
     "name": this.name,
     "lastName" : this.lastName,
@@ -68,10 +72,32 @@ class Client {
     "gender" :  this.gender,
     "phoneNumber" : this.phoneNumber,
     "inscription_date": this.inscriptionDate,
-    "has_debt": this.hasDebt,
+    "has_debt": this.hasDebt == false ? 0 : 1,
     "debt_value": this.debtValue,
     "deadline_payment_date": this.deadLinePaymentDate,
     "valor_mensual": this.valorMensual,
     "is_active": this.isActive == false ? 0 : 1,
   };
+  
+  void renovarSubscripcion(){
+    this.isActive = true;
+    this.deadLinePaymentDate = DateTime.now().add(Duration(days: 30)).toString();
+    this.debtValue = this.debtValue + this.valorMensual;
+    
+  }
+  void setAsInactive(){
+    this.isActive = false;
+    this.debtValue = this.debtValue - this.valorMensual;
+  }
+
+  void setAsDebtor(){
+    this.isActive = false;
+    this.hasDebt = true;
+  }
+
+  /*void setAsActive(){
+    this.isActive = true;
+    this.deadLinePaymentDate = DateTime.now().add(Duration(days: 30)).toString();
+    this.debtValue = valorMensual + debtValue;
+  } */
 }

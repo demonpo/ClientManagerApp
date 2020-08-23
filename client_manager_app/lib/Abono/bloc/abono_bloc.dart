@@ -30,6 +30,10 @@ class AbonoBloc extends Bloc{
     _abonoController.sink.add(await _abonoRepository.getAllAbonos(query: query));
   }
 
+  getAllAbonos() async{
+    return await _abonoRepository.getAllAbonos();
+  }
+
   Future<List<Abono>>getAbonosByClientId(int clientId) async{
     //Requiere trabajar en la implementacion, es opcional
     getAbonos();
@@ -42,7 +46,7 @@ class AbonoBloc extends Bloc{
   }
 
   updateAbono(Abono abono) async {
-    await _abonoRepository.updateClient(abono);
+    await _abonoRepository.updateAbono(abono);
     getAbonos();
   }
 

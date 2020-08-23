@@ -2,11 +2,13 @@ import 'package:clientmanagerapp/Abono/bloc/abono_bloc.dart';
 import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
 import 'package:clientmanagerapp/Client/ui/screens/client_register_screen.dart';
 import 'package:clientmanagerapp/Client/ui/widgets/client_list.dart';
+import 'package:clientmanagerapp/Notification/bloc/notification_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 
 class ClientListScreen extends StatelessWidget{
   ClientBloc clientBloc;
+  NotificationBloc notificationBloc;
   AbonoBloc abonoBloc;
 
   @override
@@ -14,6 +16,7 @@ class ClientListScreen extends StatelessWidget{
 
     clientBloc = BlocProvider.of<ClientBloc>(context);
     abonoBloc = BlocProvider.of<AbonoBloc>(context);
+    notificationBloc = BlocProvider.of<NotificationBloc>(context);
     // TODO: implement build
     return Scaffold(
       body: ClientList(),

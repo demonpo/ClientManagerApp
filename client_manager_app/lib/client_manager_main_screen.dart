@@ -1,6 +1,8 @@
 import 'package:clientmanagerapp/Abono/bloc/abono_bloc.dart';
 import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
 import 'package:clientmanagerapp/Client/ui/screens/client_list_screen.dart';
+import 'package:clientmanagerapp/Notification/bloc/notification_bloc.dart';
+import 'package:clientmanagerapp/Notification/ui/screens/notification_screen.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -14,21 +16,12 @@ class ClientManagerMainScreen extends StatefulWidget {
 }
 
 class _ClientManagerMainScreen extends State<ClientManagerMainScreen> {
+  ClientBloc clientBloc;
+  AbonoBloc abonoBloc;
+  NotificationBloc notificationBloc;
+
   int indexTap = 0;
-  final List<Widget> widgetsChildren = [
-    BlocProvider(
-      bloc: AbonoBloc(),
-      child: BlocProvider(
-        bloc: ClientBloc(),
-        child: ClientListScreen(),
-      ),
-
-    ),
-
-    //ClientListScreen(),
-    Container(),
-    Container(),
-  ];
+  List<Widget> widgetsChildren;
 
   void onTapTapped(int index){
 
@@ -40,6 +33,36 @@ class _ClientManagerMainScreen extends State<ClientManagerMainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    clientBloc =ClientBloc();
+    abonoBloc = AbonoBloc();
+    notificationBloc = NotificationBloc();
+
+    widgetsChildren = [
+      BlocProvider(
+        bloc: clientBloc,
+        child: BlocProvider(
+          bloc: abonoBloc,
+          child: BlocProvider(
+            bloc: notificationBloc,
+            child: ClientListScreen(),
+          ),
+        )
+      ),
+
+      BlocProvider(
+          bloc: clientBloc,
+          child: BlocProvider(
+            bloc: abonoBloc,
+            child: BlocProvider(
+              bloc: notificationBloc,
+              child: NotificationScreen(),
+            ),
+          )
+      ),
+      Container(),
+    ];
+
+
     // TODO: implement build
 
 
