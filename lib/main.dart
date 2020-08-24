@@ -11,15 +11,14 @@ import 'package:local_auth/local_auth.dart';
 import 'package:passcode_screen/circle.dart';
 import 'package:passcode_screen/keyboard.dart';
 import 'package:passcode_screen/passcode_screen.dart';
-import 'package:path_provider/path_provider.dart';
 import 'dart:io';
-import 'package:path/path.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:workmanager/workmanager.dart';
-
-final DATABASE_NAME="ReactiveClientManager2-3.db";
 
 
 void callbackDispatcher() {
+  final path_database="/assets/db8ArmasPayment.db";
   Workmanager.executeTask((task, inputData) async {
     print("Native called background task");
     switch (task) {
@@ -27,13 +26,12 @@ void callbackDispatcher() {
         print(" was executed. inputData = $inputData");
         ClientBloc clientBloc;
         NotificationBloc notificationBloc;
-        var documentsDirectory = await getApplicationDocumentsDirectory();
-        var path = join(documentsDirectory.path, DATABASE_NAME);
 
-        if (await File(path).exists()) {
+
+        if (await File(await getDatabasesPath()+"$path_database").exists()) {
           clientBloc= ClientBloc();
           notificationBloc = NotificationBloc();
-          /*
+/*
           //Solo para testeo se creara este cliente con deuda
           clientBloc.addClient(Client(
             cedula: "0923040885",
@@ -50,9 +48,7 @@ void callbackDispatcher() {
             inscriptionDate: DateTime.now().subtract(Duration(days: 31)).toString(),
             isActive: true,
             photoPath: "",
-
           ));
-
           //Solo para testeo se creara este cliente con deuda y listo para renovar
           clientBloc.addClient(Client(
             cedula: "0923040885",
@@ -69,9 +65,8 @@ void callbackDispatcher() {
             inscriptionDate: DateTime.now().subtract(Duration(days: 31)).toString(),
             isActive: true,
             photoPath: "",
-
           ));
-          */
+*/
           List<Client> clients = await clientBloc.getAllClients();
           bool notificationSent = false;
           await clients.forEach(await (Client client) async {
@@ -127,9 +122,6 @@ void main() async{
 
 class MyApp extends StatelessWidget {
 
-
-
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -138,7 +130,7 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
     return MaterialApp(
-      title: '8 Armas Payment',
+      title: "8 Armas Payment",
       theme: ThemeData(
         primaryColor: Color(0xff202225),
         canvasColor: Color(0xffCCD4E0),
@@ -160,10 +152,8 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isAuthenticated = false;
   bool _canCheckBiometrics;
   final LocalAuthentication auth = LocalAuthentication();
-
-  List<BiometricType> _availableBiometrics;
-  String _authorized = 'No Autorizado';
-  bool _isAuthenticating = false;
+  var prefs;
+  String pin;
   BuildContext context2;
 
 
@@ -175,7 +165,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     context2 = context;
     _checkBiometrics();
     return Scaffold(
@@ -195,15 +184,15 @@ class _MyHomePageState extends State<MyHomePage> {
               width: 200,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/icons/'
-                      'logo_2.png'),
+                  image: AssetImage("assets/icons/"
+                      "logo_2.png"),
                 ),
               ),
             ),
             Container(margin: const EdgeInsets.only(top: 100.0),
                 child:FloatingActionButton.extended(
                   onPressed: login,
-                  label: Text('Ingresar'),
+                  label: Text("Ingresar"),
                   icon: Icon(Icons.fingerprint),
                   backgroundColor: Color(0xff202225),
                 )
@@ -220,23 +209,97 @@ class _MyHomePageState extends State<MyHomePage> {
   void login() {
     Workmanager.registerOneOffTask("2", "checkDatabase",);
 
-    if(_canCheckBiometrics) _authenticate();
-    else{
-      _showLockScreen(
-        context2,
-        opaque: false,
-        cancelButton: Text(
-          'Cancelar',
-          style: const TextStyle(fontSize: 16, color: Colors.white),
-          semanticsLabel: 'Cancelar',
-        ),
-      );
-
+    if(_canCheckBiometrics) {
+      _authenticate();
+    } else{
+        verifyPin();
     }
 
   }
 
-  _showLockScreen(BuildContext context,
+  void verifyPin() async {
+    prefs = await SharedPreferences.getInstance();
+    pin = prefs.getString("pin") ?? "0";
+    print("PIN: $pin");
+    if(pin=="0") {
+      await inputDialog(context2);
+    }
+    else{
+      dialogPin();
+    }
+  }
+
+void dialogPin(){
+  _showLockScreen(
+    context2,
+    opaque: false,
+    cancelButton: Text(
+      "Cancelar",
+      style: const TextStyle(fontSize: 16, color: Colors.white),
+      semanticsLabel: "Cancelar",
+    ),
+  );
+}
+
+  Future<void> inputDialog(BuildContext context){
+    String new_pin;
+    var isPinValid = false;
+    var regExp = RegExp(r"^[0-9]{6}$",);
+
+    return showDialog<String>(
+      context: context,
+      barrierDismissible: false, // dialog is dismissible with a tap on the barrier
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Registre su pin de seguridad"),
+          content: Row(
+            children: <Widget>[
+              Expanded(
+                  child:TextField(
+                    autofocus: true,
+                    obscureText: true,
+                    maxLength: 6,
+                    keyboardType: TextInputType.number,
+                    onChanged: (value) {
+                      if(regExp.hasMatch(value)){
+                        isPinValid= true;
+                        new_pin=value;
+                      } else {
+                        isPinValid = false;
+                      }
+                    },
+                    decoration: InputDecoration(
+                        labelText: "El pin debe tener 6 dígitos",
+                    ),
+                  ))
+            ],
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Crear PIN"),
+              onPressed: () {
+                if(isPinValid) {
+                  prefs.setString("pin", new_pin);
+                  Navigator.pop(context);
+                  pin=new_pin;
+                  dialogPin();
+                }
+              },
+            ),
+            FlatButton(
+              child: Text("Cancelar"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
+
+ void _showLockScreen(BuildContext context,
       { bool opaque,
         CircleUIConfig circleUIConfig,
         KeyboardUIConfig keyboardUIConfig,
@@ -248,7 +311,7 @@ class _MyHomePageState extends State<MyHomePage> {
           opaque: opaque,
           pageBuilder: (context, animation, secondaryAnimation) => PasscodeScreen(
             title: Text(
-              'Ingrese código de acceso',
+              "Ingrese código de acceso",
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.white, fontSize: 28),
             ),
@@ -257,9 +320,9 @@ class _MyHomePageState extends State<MyHomePage> {
             passwordEnteredCallback: _onPasscodeEntered,
             cancelButton: cancelButton,
             deleteButton: Text(
-              'Borrar',
+              "Borrar",
               style: const TextStyle(fontSize: 16, color: Colors.white),
-              semanticsLabel: 'Borrar',
+              semanticsLabel: "Borrar",
             ),
             shouldTriggerVerification: _verificationNotifier.stream,
             backgroundColor: Colors.black.withOpacity(0.8),
@@ -268,12 +331,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
 
         ));
-
-
   }
-
-
-
 
   Future<void> _checkBiometrics() async {
     bool canCheckBiometrics;
@@ -290,40 +348,26 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _authenticate() async {
-    bool authenticated = false;
+    var authenticated = false;
     try {
-      setState(() {
-        _isAuthenticating = true;
-        _authorized = 'Autentificando...';
-      });
       authenticated = await auth.authenticateWithBiometrics(
-          localizedReason: 'Escanea tu huella para autenticarte',
+          localizedReason: "Escanea tu huella para autenticarte",
           useErrorDialogs: true,
           stickyAuth: true);
-      setState(() {
-        _isAuthenticating = false;
-        _authorized = 'Autentificando...';
-      });
     } on PlatformException catch (e) {
       print(e);
     }
     if (!mounted) return;
 
-    final String message = authenticated ? 'Autorizado' : 'No Autorizado';
     setState(() {
-      _authorized = message;
     });
     if(authenticated){
-      Navigator.push(context2, MaterialPageRoute(builder: (BuildContext context) => ClientManagerMainScreen()));
+      await Navigator.push(context2, MaterialPageRoute(builder: (BuildContext context) => ClientManagerMainScreen()));
     }
   }
 
-  void _cancelAuthentication() {
-    auth.stopAuthentication();
-  }
-
-  _onPasscodeEntered(String enteredPasscode) {
-    isAuthenticated = '123456' == enteredPasscode;
+  void _onPasscodeEntered(String enteredPasscode) {
+    isAuthenticated = pin == enteredPasscode;
     _verificationNotifier.add(isAuthenticated);
     if (isAuthenticated) {
       setState(() {
@@ -335,7 +379,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  _onPasscodeCancelled() {
+  void _onPasscodeCancelled() {
     Navigator.maybePop(context2);
   }
 

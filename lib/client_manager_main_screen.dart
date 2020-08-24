@@ -6,6 +6,8 @@ import 'package:clientmanagerapp/Notification/ui/screens/notification_screen.dar
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 import 'package:flutter/material.dart';
 
+import 'Client/ui/widgets/list_settings.dart';
+
 class ClientManagerMainScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -59,7 +61,7 @@ class _ClientManagerMainScreen extends State<ClientManagerMainScreen> {
             ),
           )
       ),
-      Container(),
+      ListSettings()
     ];
 
 
@@ -67,6 +69,7 @@ class _ClientManagerMainScreen extends State<ClientManagerMainScreen> {
 
 
     return Scaffold(
+
       body: widgetsChildren[indexTap],
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
@@ -74,27 +77,27 @@ class _ClientManagerMainScreen extends State<ClientManagerMainScreen> {
           primaryColor: Color(0xff43b581),
         ),
         child: BottomNavigationBar(
-          onTap: onTapTapped,
-          currentIndex: indexTap,
+            onTap: onTapTapped,
+            currentIndex: indexTap,
             items: [
               BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.people,
-                  //color: Color(0xff36393f)
-                ),
-                title: Text("")
-              ),
-              BottomNavigationBarItem(
                   icon: Icon(
-                      Icons.notifications,
-                      //color: Color(0xff36393f),
+                      Icons.people,
+                      color: Color(0xffffffff)
                   ),
                   title: Text("")
               ),
               BottomNavigationBarItem(
                   icon: Icon(
-                    Icons.person,
-                      //color: Color(0xff36393f)
+                    Icons.notifications,
+                    color: Color(0xffffffff),
+                  ),
+                  title: Text("")
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                      Icons.settings,
+                      color: Color(0xffffffff)
                   ),
                   title: Text("")
               ),

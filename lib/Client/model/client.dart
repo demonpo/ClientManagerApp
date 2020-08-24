@@ -78,12 +78,12 @@ class Client {
     "valor_mensual": this.valorMensual,
     "is_active": this.isActive == false ? 0 : 1,
   };
-  
+
   void renovarSubscripcion(){
     this.isActive = true;
     this.deadLinePaymentDate = DateTime.now().add(Duration(days: 30)).toString();
     this.debtValue = this.debtValue + this.valorMensual;
-    
+
   }
   void setAsInactive(){
     this.isActive = false;
@@ -95,9 +95,12 @@ class Client {
     this.hasDebt = true;
   }
 
-  /*void setAsActive(){
+/*void setAsActive(){
     this.isActive = true;
     this.deadLinePaymentDate = DateTime.now().add(Duration(days: 30)).toString();
     this.debtValue = valorMensual + debtValue;
   } */
+
+
+
 }
