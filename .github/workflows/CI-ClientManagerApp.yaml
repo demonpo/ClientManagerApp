@@ -30,7 +30,7 @@ jobs:
     - run: flutter pub get
     - run: flutter pub run import_sorter:main
     - run: flutter format lib
-    - run: flutter analyze
+   #- run: flutter analyze
     - run: flutter build apk
    #- run: flutter test
    #- run: flutter build appbundle
