@@ -191,6 +191,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Container(margin: const EdgeInsets.only(top: 100.0),
                 child:FloatingActionButton.extended(
+                  key: Key("btn_ingresar"),
                   onPressed: login,
                   label: Text("Ingresar"),
                   icon: Icon(Icons.fingerprint),
