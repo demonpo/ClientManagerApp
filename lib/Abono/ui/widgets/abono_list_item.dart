@@ -1,16 +1,16 @@
-
-import 'package:clientmanagerapp/Abono/model/Abono.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
 
-class AbonoListItem extends StatelessWidget{
+// Project imports:
+import 'package:clientmanagerapp/Abono/model/Abono.dart';
+
+class AbonoListItem extends StatelessWidget {
   Abono abono;
   VoidCallback onLongPress;
-
 
   AbonoListItem({this.abono, this.onLongPress});
   @override
   Widget build(BuildContext context) {
-
     return InkWell(
       onLongPress: onLongPress,
       child: Container(
@@ -35,31 +35,34 @@ class AbonoListItem extends StatelessWidget{
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text("Dia de abono:",
+                Text(
+                  "Dia de abono:",
                   style: TextStyle(
                     fontSize: 15,
                     color: Colors.white,
                   ),
                 ),
-                Text(abono.creationDate,
+                Text(
+                  abono.creationDate,
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white
-                  ),
+                      color: Colors.white),
                 ),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text("valor abonado:",
+                Text(
+                  "valor abonado:",
                   style: TextStyle(
                     fontSize: 15,
                     color: Colors.white,
                   ),
                 ),
-                Text(abono.value.toString(),
+                Text(
+                  abono.value.toString(),
                   style: TextStyle(
                     fontSize: 15,
                     color: Color(0xff43b581),
@@ -72,5 +75,4 @@ class AbonoListItem extends StatelessWidget{
       ),
     );
   }
-
 }

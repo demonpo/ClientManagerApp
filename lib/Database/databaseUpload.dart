@@ -1,12 +1,14 @@
-
+// Dart imports:
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:googleapis/drive/v3.dart' as ga;
-import 'package:http/http.dart' as http;
-import 'package:http/io_client.dart';
-import 'package:sqflite/sqflite.dart';
+
+// Package imports:
+import "package:firebase_auth/firebase_auth.dart";
+import "package:flutter_secure_storage/flutter_secure_storage.dart";
+import "package:google_sign_in/google_sign_in.dart";
+import "package:googleapis/drive/v3.dart" as ga;
+import "package:http/http.dart" as http;
+import "package:http/io_client.dart";
+import "package:sqflite/sqflite.dart";
 
 class GoogleHttpClient extends IOClient {
   final Map<String, String> _headers;
@@ -26,11 +28,11 @@ class DatabaseUpload {
   final storage = FlutterSecureStorage();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn =
-  GoogleSignIn(scopes: [ga.DriveApi.DriveAppdataScope]);
+      GoogleSignIn(scopes: [ga.DriveApi.DriveAppdataScope]);
   GoogleSignInAccount googleSignInAccount;
   ga.FileList list;
   var signedIn = false;
-  var cancel_login=false;
+  var cancel_login = false;
 
   Future<void> loginGoogle() async {
     await _loginWithGoogle();
@@ -39,7 +41,6 @@ class DatabaseUpload {
   Future<void> uploadFiles() async {
     await _uploadFileToGoogleDrive();
   }
-
 
   Future<void> downloadFiles() async {
     await _listGoogleDriveFiles();
@@ -65,50 +66,45 @@ class DatabaseUpload {
     });
     if (signedIn) {
       try {
-        await googleSignIn.signInSilently(suppressErrors: false).whenComplete(() => () {});
+        await googleSignIn
+            .signInSilently(suppressErrors: false)
+            .whenComplete(() => () {});
       } catch (e) {
         await storage.write(key: "signedIn", value: "false").then((value) {
-            signedIn = false;
+          signedIn = false;
         });
       }
     } else {
-
-      var googleSignInAccount =
-      await googleSignIn.signIn();
+      var googleSignInAccount = await googleSignIn.signIn();
       await _afterGoogleLogin(googleSignInAccount);
     }
   }
 
   Future<void> _afterGoogleLogin(GoogleSignInAccount gSA) async {
-
     try {
       googleSignInAccount = gSA;
       var googleSignInAuthentication = await googleSignInAccount.authentication;
-    var credential = GoogleAuthProvider.getCredential(
-      accessToken: googleSignInAuthentication.accessToken,
+      var credential = GoogleAuthProvider.getCredential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
 
-      idToken: googleSignInAuthentication.idToken,
-    );
+      var authResult = await _auth.signInWithCredential(credential);
 
+      var user = authResult.user;
 
-    var authResult = await _auth.signInWithCredential(credential);
+      assert(!user.isAnonymous);
+      assert(await user.getIdToken() != null);
 
-    var user = authResult.user;
+      var currentUser = await _auth.currentUser();
+      assert(user.uid == currentUser.uid);
 
-    assert(!user.isAnonymous);
-    assert(await user.getIdToken() != null);
-
-
-    var currentUser = await _auth.currentUser();
-    assert(user.uid == currentUser.uid);
-
-
-    print("signInWithGoogle succeeded: $user");
-    await storage.write(key: "signedIn", value: "true").then((value) {
-    signedIn = true;
-    });
-    }catch(e){
-      cancel_login=true;
+      print("signInWithGoogle succeeded: $user");
+      await storage.write(key: "signedIn", value: "true").then((value) {
+        signedIn = true;
+      });
+    } catch (e) {
+      cancel_login = true;
     }
   }
 
@@ -116,11 +112,10 @@ class DatabaseUpload {
     await googleSignIn.signOut().then((value) {
       print("User Sign Out");
       storage.write(key: "signedIn", value: "false").then((value) {
-          signedIn = false;
+        signedIn = false;
       });
     });
   }
-
 
   Future<void> _uploadFileToGoogleDrive() async {
     await _loginWithGoogle();
@@ -152,16 +147,14 @@ class DatabaseUpload {
         .get(gdID, downloadOptions: ga.DownloadOptions.FullMedia);
     print(file.stream);
 
-
-    final saveFile = File("${await getDatabasesPath()+"/assets"}/$fName");
+    final saveFile = File("${await getDatabasesPath() + "/assets"}/$fName");
     var dataStore = <int>[];
     file.stream.listen((data) {
       dataStore.insertAll(dataStore.length, data);
     }, onDone: () {
       saveFile.writeAsBytes(dataStore);
       print("File saved at ${saveFile.path}");
-    }, onError: (error) {
-    });
+    }, onError: (error) {});
   }
 
   Future<void> _listGoogleDriveFiles() async {
@@ -170,14 +163,13 @@ class DatabaseUpload {
     var client = GoogleHttpClient(await googleSignInAccount.authHeaders);
     var drive = ga.DriveApi(client);
     await drive.files.list(spaces: "appDataFolder").then((value) {
-           try {
-             list = value;
-             print("Id: ${list.files[0].id} File Name:${list.files[0].name}");
-             _downloadGoogleDriveFile(list.files[0].name, list.files[0].id);
-           }catch (e){
-             list=null;
+      try {
+        list = value;
+        print("Id: ${list.files[0].id} File Name:${list.files[0].name}");
+        _downloadGoogleDriveFile(list.files[0].name, list.files[0].id);
+      } catch (e) {
+        list = null;
       }
     });
   }
-
 }

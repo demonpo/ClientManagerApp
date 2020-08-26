@@ -1,13 +1,14 @@
+// Dart imports:
+import "dart:async";
 
+// Package imports:
+import "package:generic_bloc_provider/generic_bloc_provider.dart";
 
+// Project imports:
+import "package:clientmanagerapp/Abono/model/Abono.dart";
+import "package:clientmanagerapp/Abono/repository/abono_repository.dart";
 
-import 'dart:async';
-
-import 'package:clientmanagerapp/Abono/model/Abono.dart';
-import 'package:clientmanagerapp/Abono/repository/abono_repository.dart';
-import 'package:generic_bloc_provider/generic_bloc_provider.dart';
-
-class AbonoBloc extends Bloc{
+class AbonoBloc extends Bloc {
   //Get instance of the Repository
   final _abonoRepository = AbonoRepository();
 
@@ -27,14 +28,15 @@ class AbonoBloc extends Bloc{
     //sink is a way of adding data reactively to the stream
     //by registering a new event
     print("GETABONOS");
-    _abonoController.sink.add(await _abonoRepository.getAllAbonos(query: query));
+    _abonoController.sink
+        .add(await _abonoRepository.getAllAbonos(query: query));
   }
 
-  getAllAbonos() async{
+  Future getAllAbonos() async {
     return await _abonoRepository.getAllAbonos();
   }
 
-  Future<List<Abono>>getAbonosByClientId(int clientId) async{
+  Future<List<Abono>> getAbonosByClientId(int clientId) async {
     //Requiere trabajar en la implementacion, es opcional
     getAbonos();
     return await _abonoRepository.getAbonosByClientId(clientId);
@@ -59,7 +61,6 @@ class AbonoBloc extends Bloc{
     _abonoRepository.deleteAllAbonosByClientId(clientId);
     getAbonos();
   }
-
 
   dispose() {
     print("dispose");

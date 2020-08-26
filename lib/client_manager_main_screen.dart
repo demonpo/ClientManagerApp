@@ -1,11 +1,15 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:generic_bloc_provider/generic_bloc_provider.dart';
+
+// Project imports:
 import 'package:clientmanagerapp/Abono/bloc/abono_bloc.dart';
 import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
 import 'package:clientmanagerapp/Client/ui/screens/client_list_screen.dart';
 import 'package:clientmanagerapp/Notification/bloc/notification_bloc.dart';
 import 'package:clientmanagerapp/Notification/ui/screens/notification_screen.dart';
-import 'package:generic_bloc_provider/generic_bloc_provider.dart';
-import 'package:flutter/material.dart';
-
 import 'Client/ui/widgets/list_settings.dart';
 
 class ClientManagerMainScreen extends StatefulWidget {
@@ -14,7 +18,6 @@ class ClientManagerMainScreen extends StatefulWidget {
     // TODO: implement createState
     return _ClientManagerMainScreen();
   }
-
 }
 
 class _ClientManagerMainScreen extends State<ClientManagerMainScreen> {
@@ -25,32 +28,28 @@ class _ClientManagerMainScreen extends State<ClientManagerMainScreen> {
   int indexTap = 0;
   List<Widget> widgetsChildren;
 
-  void onTapTapped(int index){
-
+  void onTapTapped(int index) {
     setState(() {
       indexTap = index;
     });
-
   }
 
   @override
   Widget build(BuildContext context) {
-    clientBloc =ClientBloc();
+    clientBloc = ClientBloc();
     abonoBloc = AbonoBloc();
     notificationBloc = NotificationBloc();
 
     widgetsChildren = [
       BlocProvider(
-        bloc: clientBloc,
-        child: BlocProvider(
-          bloc: abonoBloc,
+          bloc: clientBloc,
           child: BlocProvider(
-            bloc: notificationBloc,
-            child: ClientListScreen(),
-          ),
-        )
-      ),
-
+            bloc: abonoBloc,
+            child: BlocProvider(
+              bloc: notificationBloc,
+              child: ClientListScreen(),
+            ),
+          )),
       BlocProvider(
           bloc: clientBloc,
           child: BlocProvider(
@@ -59,17 +58,13 @@ class _ClientManagerMainScreen extends State<ClientManagerMainScreen> {
               bloc: notificationBloc,
               child: NotificationScreen(),
             ),
-          )
-      ),
+          )),
       ListSettings()
     ];
 
-
     // TODO: implement build
 
-
     return Scaffold(
-
       body: widgetsChildren[indexTap],
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(
@@ -81,30 +76,19 @@ class _ClientManagerMainScreen extends State<ClientManagerMainScreen> {
             currentIndex: indexTap,
             items: [
               BottomNavigationBarItem(
-                  icon: Icon(
-                      Icons.people,
-                      color: Color(0xffffffff)
-                  ),
-                  title: Text("")
-              ),
+                  icon: Icon(Icons.people, color: Color(0xffffffff)),
+                  title: Text("")),
               BottomNavigationBarItem(
                   icon: Icon(
                     Icons.notifications,
                     color: Color(0xffffffff),
                   ),
-                  title: Text("")
-              ),
+                  title: Text("")),
               BottomNavigationBarItem(
-                  icon: Icon(
-                      Icons.settings,
-                      color: Color(0xffffffff)
-                  ),
-                  title: Text("")
-              ),
-            ]
-        ),
+                  icon: Icon(Icons.settings, color: Color(0xffffffff)),
+                  title: Text("")),
+            ]),
       ),
     );
   }
-
 }

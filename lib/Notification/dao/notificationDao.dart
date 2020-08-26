@@ -1,5 +1,7 @@
+// Dart imports:
 import 'dart:async';
 
+// Project imports:
 import 'package:clientmanagerapp/Notification/model/Notification.dart';
 import 'package:clientmanagerapp/database/databaseProvider.dart';
 
@@ -17,16 +19,15 @@ class NotificationDao {
 
   //Get All Todo items
   //Searches if query string was passed
-  Future<List<Notification>> getNotifications({List<String> columns, String query}) async {
+  Future<List<Notification>> getNotifications(
+      {List<String> columns, String query}) async {
     final db = await dbProvider.database;
 
     List<Map<String, dynamic>> result;
     if (query != null) {
       if (query.isNotEmpty)
         result = await db.query(NOTIFICATIONTABLE,
-            columns: columns,
-            where: 'name LIKE ?',
-            whereArgs: ["%$query%"]);
+            columns: columns, where: 'name LIKE ?', whereArgs: ["%$query%"]);
     } else {
       result = await db.query(NOTIFICATIONTABLE, columns: columns);
     }
@@ -37,12 +38,12 @@ class NotificationDao {
     return notifications;
   }
 
-
   Future<List<Notification>> getNotificationsByClientId(int clientId) async {
     final db = await dbProvider.database;
 
     List<Map<String, dynamic>> result;
-    result = await db.rawQuery('SELECT Notification.id, Notification.creationDate, Notification.title, Notification.details, Notification.client_id FROM Notification, Client WHERE Client.id=Notification.client_id');
+    result = await db.rawQuery(
+        'SELECT Notification.id, Notification.creationDate, Notification.title, Notification.details, Notification.client_id FROM Notification, Client WHERE Client.id=Notification.client_id');
 
     List<Notification> notifications = result.isNotEmpty
         ? result.map((item) => Notification.fromDatabaseJson(item)).toList()
@@ -53,7 +54,8 @@ class NotificationDao {
   Future deleteAllNotificationsByClientId(int clientId) async {
     final db = await dbProvider.database;
     List<Map<String, dynamic>> result;
-    result = await db.rawQuery('DELETE FROM Notification WHERE Notification.client_id=$clientId');
+    result = await db.rawQuery(
+        'DELETE FROM Notification WHERE Notification.client_id=$clientId');
     return result;
   }
 
@@ -61,7 +63,8 @@ class NotificationDao {
   Future<int> updateNotification(Notification notification) async {
     final db = await dbProvider.database;
 
-    var result = await db.update(NOTIFICATIONTABLE, notification.toDatabaseJson(),
+    var result = await db.update(
+        NOTIFICATIONTABLE, notification.toDatabaseJson(),
         where: "id = ?", whereArgs: [notification.id]);
 
     return result;
@@ -70,7 +73,8 @@ class NotificationDao {
   //Delete Client records
   Future<int> deleteNotification(int id) async {
     final db = await dbProvider.database;
-    var result = await db.delete(NOTIFICATIONTABLE, where: 'id = ?', whereArgs: [id]);
+    var result =
+        await db.delete(NOTIFICATIONTABLE, where: 'id = ?', whereArgs: [id]);
     return result;
   }
 

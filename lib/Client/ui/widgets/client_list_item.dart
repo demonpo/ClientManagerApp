@@ -1,10 +1,14 @@
+// Dart imports:
 import 'dart:io';
 
-import 'package:clientmanagerapp/Client/model/client.dart';
+// Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ClientListItem extends StatelessWidget{
+// Project imports:
+import 'package:clientmanagerapp/Client/model/client.dart';
+
+class ClientListItem extends StatelessWidget {
   Client client;
   VoidCallback onLongPress;
   VoidCallback onTap;
@@ -12,41 +16,38 @@ class ClientListItem extends StatelessWidget{
   ClientListItem({this.client, this.onLongPress, this.onTap});
   @override
   Widget build(BuildContext context) {
-
     final hasPhoto = client.photoPath == "" ? false : true;
     //final hasPhoto = client.photoPath == null ? false : true;
 
     final clientPhoto = Container(
-      width: 50,
-      height: 50,
-      margin: EdgeInsets.only(
-          right: 20.0
-      ),
-      decoration: BoxDecoration(
+        width: 50,
+        height: 50,
+        margin: EdgeInsets.only(right: 20.0),
+        decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Color(0xff43b581),
-      ),
-      child: Stack(
-        children: <Widget>[
-          Center(
-            child: Icon(
-              Icons.person,
-              color: Colors.white,
-            ),
-          ),
-          hasPhoto ? Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: FileImage(File(client.photoPath)),
+        ),
+        child: Stack(
+          children: <Widget>[
+            Center(
+              child: Icon(
+                Icons.person,
+                color: Colors.white,
               ),
             ),
-          ) :  Container(),
-        ],
-      )
-    );
-
+            hasPhoto
+                ? Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: FileImage(File(client.photoPath)),
+                      ),
+                    ),
+                  )
+                : Container(),
+          ],
+        ));
 
     final clientDetails = Container(
       child: Column(
@@ -62,8 +63,7 @@ class ClientListItem extends StatelessWidget{
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white
-              ),
+                  color: Colors.white),
             ),
           ),
 
@@ -71,9 +71,9 @@ class ClientListItem extends StatelessWidget{
           Text(
             client.email,
             style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-                color: Color(0xffa2a3a7),
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Color(0xffa2a3a7),
             ),
           ),
         ],
@@ -105,12 +105,8 @@ class ClientListItem extends StatelessWidget{
             clientPhoto,
             clientDetails,
           ],
-
-
         ),
-
       ),
     );
   }
-
 }

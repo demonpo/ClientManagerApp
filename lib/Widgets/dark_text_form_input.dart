@@ -1,15 +1,23 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
+// Flutter imports:
+import "package:flutter/material.dart";
 
-class DarkTextFormInput extends StatelessWidget{
+// Package imports:
+import "package:flutter_form_builder/flutter_form_builder.dart";
 
+class DarkTextFormInput extends StatelessWidget {
   String attribute;
   String hintText;
   String errorText;
   IconData iconData;
   int maxLines;
   List<String Function(dynamic)> validators;
-  DarkTextFormInput({@required this.iconData, @required this.validators, @required this.hintText, @required this.errorText, @required this.attribute, @required this.maxLines});
+  DarkTextFormInput(
+      {@required this.iconData,
+      @required this.validators,
+      @required this.hintText,
+      @required this.errorText,
+      @required this.attribute,
+      @required this.maxLines});
 
   @override
   Widget build(BuildContext context) {
@@ -28,12 +36,10 @@ class DarkTextFormInput extends StatelessWidget{
         color: Color(0xff36393f),
         borderRadius: BorderRadius.all(Radius.circular(10.0)),
       ),
-
       child: FormBuilderTextField(
         maxLines: maxLines,
         attribute: attribute,
         validators: validators,
-
         decoration: InputDecoration(
           icon: Icon(iconData),
           hintText: hintText,
@@ -47,11 +53,8 @@ class DarkTextFormInput extends StatelessWidget{
         style: TextStyle(
           fontSize: 20,
           color: Colors.white,
-
         ),
       ),
     );
   }
-
-
 }

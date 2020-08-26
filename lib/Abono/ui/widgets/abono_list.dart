@@ -1,14 +1,16 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:generic_bloc_provider/generic_bloc_provider.dart';
+
+// Project imports:
 import 'package:clientmanagerapp/Abono/bloc/abono_bloc.dart';
 import 'package:clientmanagerapp/Abono/model/Abono.dart';
 import 'package:clientmanagerapp/Client/model/client.dart';
-import 'package:flutter/material.dart';
-import 'package:generic_bloc_provider/generic_bloc_provider.dart';
-
 import 'abono_list_item.dart';
 
-
-
-class AbonoList extends StatelessWidget{
+class AbonoList extends StatelessWidget {
   AbonoBloc abonoBloc;
   Client client;
   List<Abono> abonosById;
@@ -24,18 +26,20 @@ class AbonoList extends StatelessWidget{
     return Container(
       width: screenWidth,
       height: screenHeight,
-
-
       child: StreamBuilder(
         stream: abonoBloc.abonos,
-        builder: (context, AsyncSnapshot<List<Abono>> snapshot){
-          switch (snapshot.connectionState){
+        builder: (context, AsyncSnapshot<List<Abono>> snapshot) {
+          switch (snapshot.connectionState) {
             case ConnectionState.waiting:
               print("ABONOLIST: WAITING");
-              return Center(child: CircularProgressIndicator(),);
+              return Center(
+                child: CircularProgressIndicator(),
+              );
             case ConnectionState.none:
               print("ABONOLIST: NONE");
-              return Center(child: CircularProgressIndicator(),);
+              return Center(
+                child: CircularProgressIndicator(),
+              );
             case ConnectionState.active:
               print("ABONOLIST: ACTIVE");
               return _getAbonoListView(snapshot);
@@ -45,57 +49,52 @@ class AbonoList extends StatelessWidget{
             default:
               print("ABONOLIST: DEFAULT");
               return null;
-
           }
         },
-
       ),
     );
   }
 
-
   _getAbonoListView(AsyncSnapshot<List<Abono>> snapshot) {
-    if(snapshot.hasData){
+    if (snapshot.hasData) {
       print("HAS DATA");
 
-      if(snapshot.data.length != 0){
-        abonosById = snapshot.data.where((element) => element.clientId == client.id).toList();
+      if (snapshot.data.length != 0) {
+        abonosById = snapshot.data
+            .where((element) => element.clientId == client.id)
+            .toList();
         abonosById.forEach((element) {
-          print("ABONOCREATIONDATE${element.creationDate} ${element.value} CLIENTID:${element.clientId}");
+          print(
+              "ABONOCREATIONDATE${element.creationDate} ${element.value} CLIENTID:${element.clientId}");
         });
         return ListView.builder(
-          itemCount: abonosById.length,
+            itemCount: abonosById.length,
             itemBuilder: (context, itemPosition) {
-          Abono abono = abonosById[itemPosition];
-          print("ABONOCREATIONDATE${abono.creationDate} ${abono.value} ABONOID:${abono.clientId}");
-          return AbonoListItem(
-            abono: abono,
-            onLongPress: (){
-              _settingModalBottomSheet(context,abono.id);
-            },
-          );
-        }
-        );
-      }
-      else{
+              Abono abono = abonosById[itemPosition];
+              print(
+                  "ABONOCREATIONDATE${abono.creationDate} ${abono.value} ABONOID:${abono.clientId}");
+              return AbonoListItem(
+                abono: abono,
+                onLongPress: () {
+                  _settingModalBottomSheet(context, abono.id);
+                },
+              );
+            });
+      } else {
         return Container();
       }
-    }
-
-    else {
+    } else {
       print("NO DATA");
       return Center(
         child: Container(),
       );
-
     }
   }
 
-
-  void _settingModalBottomSheet(context, int abonoId){
+  void _settingModalBottomSheet(context, int abonoId) {
     showModalBottomSheet(
         context: context,
-        builder: (BuildContext bc){
+        builder: (BuildContext bc) {
           return Container(
             child: Wrap(
               children: <Widget>[
@@ -105,14 +104,10 @@ class AbonoList extends StatelessWidget{
                     onTap: () {
                       Navigator.pop(context);
                       abonoBloc.deleteAbonoById(abonoId);
-                    }
-                ),
-
+                    }),
               ],
             ),
           );
-        }
-    );
+        });
   }
-
 }

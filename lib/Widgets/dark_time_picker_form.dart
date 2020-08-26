@@ -1,13 +1,18 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:intl/intl.dart';
 
-class DarkTimePickerForm extends StatelessWidget{
-
+class DarkTimePickerForm extends StatelessWidget {
   String attribute;
   String labelText;
   List<String Function(dynamic)> validators;
-  DarkTimePickerForm({@required this.validators, @required this.attribute, @required this.labelText});
+  DarkTimePickerForm(
+      {@required this.validators,
+      @required this.attribute,
+      @required this.labelText});
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +31,11 @@ class DarkTimePickerForm extends StatelessWidget{
         color: Color(0xff36393f),
         borderRadius: BorderRadius.all(Radius.circular(10.0)),
       ),
-
       child: FormBuilderDateTimePicker(
         attribute: attribute,
         inputType: InputType.date,
         format: DateFormat("yyyy-MM-dd"),
-        style: TextStyle(
-          color: Colors.white
-        ),
+        style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
           labelText: labelText,
           labelStyle: TextStyle(
@@ -41,11 +43,8 @@ class DarkTimePickerForm extends StatelessWidget{
           ),
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
-
         ),
       ),
     );
   }
-
-
 }

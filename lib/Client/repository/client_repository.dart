@@ -1,6 +1,4 @@
-
-
-
+// Project imports:
 import 'package:clientmanagerapp/Client/dao/clientDao.dart';
 import 'package:clientmanagerapp/Client/model/client.dart';
 

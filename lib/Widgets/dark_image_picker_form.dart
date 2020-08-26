@@ -1,13 +1,20 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class DarkImagePickerForm extends StatelessWidget{
+class DarkImagePickerForm extends StatelessWidget {
   double height;
   double width;
 
   String attribute;
   List<String Function(dynamic)> validators;
-  DarkImagePickerForm({@required this.validators, @required this.attribute, @required this.height,@required this.width});
+  DarkImagePickerForm(
+      {@required this.validators,
+      @required this.attribute,
+      @required this.height,
+      @required this.width});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +22,6 @@ class DarkImagePickerForm extends StatelessWidget{
       height: height,
       width: width,
       alignment: Alignment(0.0, 0.0),
-
       margin: EdgeInsets.only(
         top: 5,
         bottom: 5,
@@ -32,17 +38,10 @@ class DarkImagePickerForm extends StatelessWidget{
       ),
       child: FormBuilderImagePicker(
         maxImages: 1,
-        decoration: InputDecoration(
-        ),
+        decoration: InputDecoration(),
         validators: validators,
         attribute: attribute,
-
-
-
-
       ),
     );
   }
-
-
 }

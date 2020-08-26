@@ -1,17 +1,18 @@
-
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
 import "package:clientmanagerapp/Notification/model/Notification.dart" as notif;
 
-class NotificationListItem extends StatelessWidget{
+class NotificationListItem extends StatelessWidget {
   notif.Notification notification;
   VoidCallback onLongPress;
-
 
   NotificationListItem({this.notification, this.onLongPress});
   @override
   Widget build(BuildContext context) {
-    DateTime notificationCreationDate = DateTime.parse(notification.creationDate);
-
+    DateTime notificationCreationDate =
+        DateTime.parse(notification.creationDate);
 
     return InkWell(
       onLongPress: onLongPress,
@@ -37,31 +38,34 @@ class NotificationListItem extends StatelessWidget{
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text("Notificación creada el:",
+                Text(
+                  "Notificación creada el:",
                   style: TextStyle(
                     fontSize: 15,
                     color: Colors.white,
                   ),
                 ),
-                Text("${notificationCreationDate.year}-${notificationCreationDate.month}-${notificationCreationDate.day}",
+                Text(
+                  "${notificationCreationDate.year}-${notificationCreationDate.month}-${notificationCreationDate.day}",
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white
-                  ),
+                      color: Colors.white),
                 ),
               ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text("Título:",
+                Text(
+                  "Título:",
                   style: TextStyle(
                     fontSize: 15,
                     color: Colors.white,
                   ),
                 ),
-                Text(notification.title,
+                Text(
+                  notification.title,
                   style: TextStyle(
                     fontSize: 15,
                     color: Color(0xff43b581),
@@ -72,7 +76,8 @@ class NotificationListItem extends StatelessWidget{
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(notification.details,
+                Text(
+                  notification.details,
                   style: TextStyle(
                     fontSize: 15,
                     color: Color(0xff43b581),
@@ -85,5 +90,4 @@ class NotificationListItem extends StatelessWidget{
       ),
     );
   }
-
 }

@@ -1,8 +1,9 @@
+// Dart imports:
 import 'dart:async';
 
+// Project imports:
 import 'package:clientmanagerapp/Client/model/client.dart';
 import 'package:clientmanagerapp/database/databaseProvider.dart';
-
 
 class ClientDao {
   final dbProvider = DatabaseProvider.dbProvider;
@@ -23,9 +24,7 @@ class ClientDao {
     if (query != null) {
       if (query.isNotEmpty)
         result = await db.query(clientTABLE,
-            columns: columns,
-            where: 'name LIKE ?',
-            whereArgs: ["%$query%"]);
+            columns: columns, where: 'name LIKE ?', whereArgs: ["%$query%"]);
     } else {
       result = await db.query(clientTABLE, columns: columns);
     }
@@ -36,11 +35,11 @@ class ClientDao {
     return clients;
   }
 
-  Future getClientById(int cliendId) async{
+  Future getClientById(int cliendId) async {
     final db = await dbProvider.database;
 
-    var result = await db.query(clientTABLE,
-        where: "id = ?", whereArgs: [cliendId]);
+    var result =
+        await db.query(clientTABLE, where: "id = ?", whereArgs: [cliendId]);
 
     List<Client> clients = result.isNotEmpty
         ? result.map((item) => Client.fromDatabaseJson(item)).toList()

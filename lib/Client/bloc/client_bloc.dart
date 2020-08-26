@@ -1,9 +1,14 @@
+// Dart imports:
 import 'dart:async';
-import 'package:clientmanagerapp/Client/model/client.dart';
-import 'package:clientmanagerapp/Client/repository/client_repository.dart';
+
+// Package imports:
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 
-class ClientBloc extends Bloc{
+// Project imports:
+import 'package:clientmanagerapp/Client/model/client.dart';
+import 'package:clientmanagerapp/Client/repository/client_repository.dart';
+
+class ClientBloc extends Bloc {
   //Get instance of the Repository
   final _clientRepository = ClientRepository();
 
@@ -23,10 +28,11 @@ class ClientBloc extends Bloc{
     //sink is a way of adding data reactively to the stream
     //by registering a new event
     print("GETCLIENTS");
-    _clientController.sink.add(await _clientRepository.getAllClients(query: query));
+    _clientController.sink
+        .add(await _clientRepository.getAllClients(query: query));
   }
 
-  getAllClients() async{
+  getAllClients() async {
     return await _clientRepository.getAllClients();
   }
 

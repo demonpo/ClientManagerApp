@@ -1,11 +1,14 @@
+// Dart imports:
 import 'dart:async';
 
-
-import 'package:clientmanagerapp/Notification/model/Notification.dart';
-import 'package:clientmanagerapp/Notification/repository/notification_repository.dart';
+// Package imports:
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 
-class NotificationBloc extends Bloc{
+// Project imports:
+import 'package:clientmanagerapp/Notification/model/Notification.dart';
+import 'package:clientmanagerapp/Notification/repository/notification_repository.dart';
+
+class NotificationBloc extends Bloc {
   //Get instance of the Repository
   final _notificationRepository = NotificationRepository();
 
@@ -13,7 +16,8 @@ class NotificationBloc extends Bloc{
   //the state of our stream of data like adding
   //new data, change the state of the stream
   //and broadcast it to observers/subscribers
-  final _notificationController = StreamController<List<Notification>>.broadcast();
+  final _notificationController =
+      StreamController<List<Notification>>.broadcast();
 
   get notifications => _notificationController.stream;
 
@@ -25,18 +29,18 @@ class NotificationBloc extends Bloc{
     //sink is a way of adding data reactively to the stream
     //by registering a new event
     print("GETNOTIFICATIONS");
-    _notificationController.sink.add(await _notificationRepository.getAllNotifications(query: query));
+    _notificationController.sink
+        .add(await _notificationRepository.getAllNotifications(query: query));
   }
 
-  Future<List<Notification>>getNotificationsByClientId(int clientId) async{
+  Future<List<Notification>> getNotificationsByClientId(int clientId) async {
     //Requiere trabajar en la implementacion, es opcional
     getNotifications();
     return await _notificationRepository.getNotificationsByClientId(clientId);
   }
 
-  Future<List<Notification>> getAllNotifications() async{
+  Future<List<Notification>> getAllNotifications() async {
     return await _notificationRepository.getAllNotifications();
-
   }
 
   addNotification(Notification notification) async {
@@ -58,7 +62,6 @@ class NotificationBloc extends Bloc{
     _notificationRepository.deleteAllNotificationsByClientId(clientId);
     getNotifications();
   }
-
 
   dispose() {
     print("dispose");

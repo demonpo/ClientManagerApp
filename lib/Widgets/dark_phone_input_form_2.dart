@@ -1,7 +1,10 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
-class DarkPhoneInputForm2 extends StatefulWidget{
+class DarkPhoneInputForm2 extends StatefulWidget {
   String phoneNumber;
   String hintText;
   DarkPhoneInputForm2({this.hintText});
@@ -11,17 +14,15 @@ class DarkPhoneInputForm2 extends StatefulWidget{
     // TODO: implement createState
     return _DarDarkPhoneInputForm2();
   }
-
 }
 
-class _DarDarkPhoneInputForm2 extends State<DarkPhoneInputForm2>{
+class _DarDarkPhoneInputForm2 extends State<DarkPhoneInputForm2> {
   TextEditingController controller = TextEditingController();
   String initialCountry = 'EC';
   PhoneNumber number = PhoneNumber(isoCode: "EC");
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       margin: EdgeInsets.only(
         top: 5,
@@ -29,14 +30,11 @@ class _DarDarkPhoneInputForm2 extends State<DarkPhoneInputForm2>{
         left: 10,
         right: 10,
       ),
-      padding: EdgeInsets.only(
-        left: 20
-      ),
+      padding: EdgeInsets.only(left: 20),
       decoration: BoxDecoration(
         color: Color(0xff36393f),
         borderRadius: BorderRadius.all(Radius.circular(10.0)),
       ),
-
       child: InternationalPhoneNumberInput(
         onInputChanged: (PhoneNumber number) {
           widget.phoneNumber = number.phoneNumber;
@@ -62,10 +60,7 @@ class _DarDarkPhoneInputForm2 extends State<DarkPhoneInputForm2>{
         textFieldController: controller,
         inputBorder: OutlineInputBorder(),
         selectorType: PhoneInputSelectorType.DIALOG,
-
-
       ),
     );
   }
-
 }

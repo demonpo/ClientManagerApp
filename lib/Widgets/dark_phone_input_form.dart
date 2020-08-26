@@ -1,8 +1,10 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-class DarkPhoneInputForm extends StatelessWidget{
-
+class DarkPhoneInputForm extends StatelessWidget {
   String attribute;
   String hintText;
   String errorText;
@@ -10,7 +12,13 @@ class DarkPhoneInputForm extends StatelessWidget{
   String initialPhoneNumber = "";
   String phoneCountryIsoCode;
   List<String Function(dynamic)> validators;
-  DarkPhoneInputForm({@required this.validators, @required this.hintText, @required this.errorText, @required this.attribute,@required this.phoneCountryIsoCode, @required this.dialogTitle});
+  DarkPhoneInputForm(
+      {@required this.validators,
+      @required this.hintText,
+      @required this.errorText,
+      @required this.attribute,
+      @required this.phoneCountryIsoCode,
+      @required this.dialogTitle});
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -21,15 +29,12 @@ class DarkPhoneInputForm extends StatelessWidget{
         left: 10,
         right: 10,
       ),
-      padding: EdgeInsets.only(
-      ),
+      padding: EdgeInsets.only(),
       decoration: BoxDecoration(
         color: Color(0xff36393f),
         borderRadius: BorderRadius.all(Radius.circular(10.0)),
       ),
-
       child: FormBuilderPhoneField(
-
         attribute: attribute,
         validators: validators,
         dialogTitle: Text(dialogTitle),
@@ -42,7 +47,6 @@ class DarkPhoneInputForm extends StatelessWidget{
         initialValue: initialPhoneNumber,
         autofocus: false,
         decoration: InputDecoration(
-
           hintText: hintText,
           hintStyle: TextStyle(
             color: Color(0xff686c77),
@@ -54,11 +58,8 @@ class DarkPhoneInputForm extends StatelessWidget{
         style: TextStyle(
           fontSize: 15,
           color: Colors.white,
-
         ),
       ),
     );
   }
-
-
 }

@@ -1,5 +1,4 @@
-
-
+// Project imports:
 import 'package:clientmanagerapp/Abono/dao/abonoDao.dart';
 import 'package:clientmanagerapp/Abono/model/Abono.dart';
 
@@ -22,5 +21,4 @@ class AbonoRepository {
 
   Future deleteAllAbonosByClientId(int clientId) =>
       abonoDao.deleteAllAbonosByClientId(clientId);
-
 }

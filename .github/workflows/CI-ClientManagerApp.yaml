@@ -28,9 +28,13 @@ jobs:
       with:
         flutter-version: '1.20.0'
     - run: flutter pub get
-  #- run: flutter test
+    - run: flutter pub run import_sorter:main
+    - run: flutter format lib
+    - run: flutter analyze
     - run: flutter build apk
-  # - run: flutter build appbundle
+   #- run: flutter test
+   #- run: flutter build appbundle
+
 # Upload generated apk to the artifacts.
     - uses: actions/upload-artifact@v1
       with:

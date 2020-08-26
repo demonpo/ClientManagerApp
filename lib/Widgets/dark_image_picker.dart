@@ -1,10 +1,14 @@
+// Dart imports:
 import 'dart:io';
 import 'dart:ui';
 
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:image_picker/image_picker.dart';
 
-class DarkImagePicker extends StatefulWidget{
+class DarkImagePicker extends StatefulWidget {
   File image;
   double size;
   DarkImagePicker({@required this.size});
@@ -14,17 +18,14 @@ class DarkImagePicker extends StatefulWidget{
     // TODO: implement createState
     return _DarkImagePickerState();
   }
-
-
 }
 
-
-class _DarkImagePickerState extends State<DarkImagePicker>{
-
+class _DarkImagePickerState extends State<DarkImagePicker> {
   final picker = ImagePicker();
 
   Future getImage() async {
-    final pickedFile = await picker.getImage(source: ImageSource.camera, imageQuality: 50);
+    final pickedFile =
+        await picker.getImage(source: ImageSource.camera, imageQuality: 50);
 
     setState(() {
       widget.image = File(pickedFile.path);
@@ -33,12 +34,11 @@ class _DarkImagePickerState extends State<DarkImagePicker>{
 
   @override
   Widget build(BuildContext context) {
-
     return InkWell(
       onTap: getImage,
       child: Container(
         margin: EdgeInsets.only(
-          top:10,
+          top: 10,
           bottom: 10,
         ),
         width: widget.size,
@@ -46,7 +46,6 @@ class _DarkImagePickerState extends State<DarkImagePicker>{
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Color(0xff43b581),
-
         ),
         child: Stack(
           children: <Widget>[
@@ -54,24 +53,23 @@ class _DarkImagePickerState extends State<DarkImagePicker>{
               child: Icon(
                 Icons.person,
                 color: Colors.white,
-                size: widget.size/2,
+                size: widget.size / 2,
               ),
             ),
-            widget.image != null ? Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: FileImage(widget.image),
-                ),
-              ),
-            ) :  Container(),
+            widget.image != null
+                ? Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: FileImage(widget.image),
+                      ),
+                    ),
+                  )
+                : Container(),
           ],
         ),
       ),
     );
   }
-
-
 }
-

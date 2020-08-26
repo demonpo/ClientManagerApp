@@ -1,9 +1,11 @@
-import 'dart:async';
+// Dart imports:
+import "dart:async";
 
-import 'package:clientmanagerapp/Abono/model/Abono.dart';
-import 'package:clientmanagerapp/Client/model/client.dart';
-import 'package:clientmanagerapp/database/databaseProvider.dart';
-final ABONOTABLE = 'Abono';
+// Project imports:
+import "package:clientmanagerapp/Abono/model/Abono.dart";
+import "package:clientmanagerapp/database/databaseProvider.dart";
+
+final ABONOTABLE = "Abono";
 
 class AbonoDao {
   final dbProvider = DatabaseProvider.dbProvider;
@@ -22,16 +24,15 @@ class AbonoDao {
 
     List<Map<String, dynamic>> result;
     if (query != null) {
-      if (query.isNotEmpty)
+      if (query.isNotEmpty) {
         result = await db.query(ABONOTABLE,
-            columns: columns,
-            where: 'name LIKE ?',
-            whereArgs: ["%$query%"]);
+            columns: columns, where: 'name LIKE ?', whereArgs: ["%$query%"]);
+      }
     } else {
       result = await db.query(ABONOTABLE, columns: columns);
     }
 
-    List<Abono> abonos = result.isNotEmpty
+    var abonos = result.isNotEmpty
         ? result.map((item) => Abono.fromDatabaseJson(item)).toList()
         : [];
     return abonos;
@@ -41,9 +42,10 @@ class AbonoDao {
     final db = await dbProvider.database;
 
     List<Map<String, dynamic>> result;
-    result = await db.rawQuery('SELECT Abono.id, Abono.creation_date, Abono.value, Abono.client_id FROM Abono, Client WHERE Client.id=Abono.client_id');
+    result = await db.rawQuery(
+        "SELECT Abono.id, Abono.creation_date, Abono.value, Abono.client_id FROM Abono, Client WHERE Client.id=Abono.client_id");
 
-    List<Abono> abonos = result.isNotEmpty
+    var abonos = result.isNotEmpty
         ? result.map((item) => Abono.fromDatabaseJson(item)).toList()
         : [];
     return abonos;
@@ -53,7 +55,8 @@ class AbonoDao {
     final db = await dbProvider.database;
 
     List<Map<String, dynamic>> result;
-    result = await db.rawQuery('DELETE FROM Abono WHERE Abono.client_id=$clientId');
+    result =
+        await db.rawQuery("DELETE FROM Abono WHERE Abono.client_id=$clientId");
 
     return result;
   }
@@ -71,7 +74,7 @@ class AbonoDao {
   //Delete Client records
   Future<int> deleteAbono(int id) async {
     final db = await dbProvider.database;
-    var result = await db.delete(ABONOTABLE, where: 'id = ?', whereArgs: [id]);
+    var result = await db.delete(ABONOTABLE, where: "id = ?", whereArgs: [id]);
 
     return result;
   }

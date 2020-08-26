@@ -1,12 +1,13 @@
-
+// Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+// Package imports:
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationHelper {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
   AndroidInitializationSettings androidInitializationSettings;
   IOSInitializationSettings iosInitializationSettings;
   InitializationSettings initializationSettings;
@@ -31,24 +32,24 @@ class NotificationHelper {
     await showDialog(
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
-          title: Text(title),
-          content: Text(body),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              isDefaultAction: true,
-              child: Text('OKay'),
-              onPressed: () {
-                // do something here
-              },
-            )
-          ],
-        ));
+              title: Text(title),
+              content: Text(body),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  isDefaultAction: true,
+                  child: Text('OKay'),
+                  onPressed: () {
+                    // do something here
+                  },
+                )
+              ],
+            ));
   }
 
-  Future<void> showNotificationBtweenInterval({String title ="", String details ="" }) async {
-
+  Future<void> showNotificationBtweenInterval(
+      {String title = "", String details = ""}) async {
     AndroidNotificationDetails androidNotificationDetails =
-    AndroidNotificationDetails(
+        AndroidNotificationDetails(
       'channel_Id',
       'Channel Name',
       'Channel Description',
@@ -62,16 +63,9 @@ class NotificationHelper {
 
     IOSNotificationDetails iosNotificationDetails = IOSNotificationDetails();
     NotificationDetails notificationDetails =
-    NotificationDetails(androidNotificationDetails, iosNotificationDetails);
+        NotificationDetails(androidNotificationDetails, iosNotificationDetails);
 
-
-    await flutterLocalNotificationsPlugin.show(0, title,
-          details, notificationDetails);
-
+    await flutterLocalNotificationsPlugin.show(
+        0, title, details, notificationDetails);
   }
-
-
-
-
-
 }

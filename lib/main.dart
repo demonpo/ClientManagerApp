@@ -1,24 +1,30 @@
-import 'dart:async';
-import 'package:clientmanagerapp/Client/bloc/client_bloc.dart';
-import 'package:clientmanagerapp/Client/model/client.dart';
-import 'package:clientmanagerapp/Notification/bloc/notification_bloc.dart';
-import 'package:clientmanagerapp/Notification/model/Notification.dart' as notif;
-import 'package:clientmanagerapp/Notification/utility/notification_helper.dart';
-import 'package:clientmanagerapp/client_manager_main_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:local_auth/local_auth.dart';
-import 'package:passcode_screen/circle.dart';
-import 'package:passcode_screen/keyboard.dart';
-import 'package:passcode_screen/passcode_screen.dart';
-import 'dart:io';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:workmanager/workmanager.dart';
+// Dart imports:
+import "dart:async";
+import "dart:io";
 
+// Flutter imports:
+import "package:flutter/material.dart";
+import "package:flutter/services.dart";
+
+// Package imports:
+import "package:local_auth/local_auth.dart";
+import "package:passcode_screen/circle.dart";
+import "package:passcode_screen/keyboard.dart";
+import "package:passcode_screen/passcode_screen.dart";
+import "package:shared_preferences/shared_preferences.dart";
+import "package:sqflite/sqflite.dart";
+import "package:workmanager/workmanager.dart";
+
+// Project imports:
+import "package:clientmanagerapp/Client/bloc/client_bloc.dart";
+import "package:clientmanagerapp/Client/model/client.dart";
+import "package:clientmanagerapp/Notification/bloc/notification_bloc.dart";
+import "package:clientmanagerapp/Notification/model/Notification.dart" as notif;
+import "package:clientmanagerapp/Notification/utility/notification_helper.dart";
+import "package:clientmanagerapp/client_manager_main_screen.dart";
 
 void callbackDispatcher() {
-  final path_database="/assets/db8ArmasPayment.db";
+  final path_database = "/assets/db8ArmasPayment.db";
   Workmanager.executeTask((task, inputData) async {
     print("Native called background task");
     switch (task) {
@@ -27,9 +33,8 @@ void callbackDispatcher() {
         ClientBloc clientBloc;
         NotificationBloc notificationBloc;
 
-
-        if (await File(await getDatabasesPath()+"$path_database").exists()) {
-          clientBloc= ClientBloc();
+        if (await File(await getDatabasesPath() + "$path_database").exists()) {
+          clientBloc = ClientBloc();
           notificationBloc = NotificationBloc();
 /*
           //Solo para testeo se creara este cliente con deuda
@@ -68,11 +73,16 @@ void callbackDispatcher() {
           ));
 */
           List<Client> clients = await clientBloc.getAllClients();
-          bool notificationSent = false;
+          var notificationSent = false;
           await clients.forEach(await (Client client) async {
             print("antes del if en el proceso del background");
-            if(DateTime.now().isAfter(DateTime.parse(client.deadLinePaymentDate)) && client.debtValue > 0  && client.hasDebt == false && client.isActive){
-              print("SE GENERO NOTIFICACION DEL CLIENTE ${client.name} ${client.lastName}");
+            if (DateTime.now()
+                    .isAfter(DateTime.parse(client.deadLinePaymentDate)) &&
+                client.debtValue > 0 &&
+                client.hasDebt == false &&
+                client.isActive) {
+              print(
+                  "SE GENERO NOTIFICACION DEL CLIENTE ${client.name} ${client.lastName}");
               client.setAsDebtor();
               clientBloc.updateClient(client);
               await notificationBloc.addNotification(
@@ -80,16 +90,18 @@ void callbackDispatcher() {
                   creationDate: DateTime.now().toString(),
                   clientId: client.id,
                   title: "Deuda!!",
-                  details: "El cliente ${client.name} ${client.lastName} tiene una deuda de ${client.debtValue}",
+                  details:
+                      "El cliente ${client.name} ${client.lastName} tiene una deuda de ${client.debtValue}",
                 ),
               );
-              if(!notificationSent){
-                NotificationHelper().showNotificationBtweenInterval(title: "Deudas!", details: "Hay deudas pendientes!");
+              if (!notificationSent) {
+                await NotificationHelper().showNotificationBtweenInterval(
+                    title: "Deudas!", details: "Hay deudas pendientes!");
                 notificationSent = true;
               }
-
-            }
-            else if (DateTime.now().isAfter(DateTime.parse(client.deadLinePaymentDate)) && client.debtValue <= 0){
+            } else if (DateTime.now()
+                    .isAfter(DateTime.parse(client.deadLinePaymentDate)) &&
+                client.debtValue <= 0) {
               client.renovarSubscripcion();
               clientBloc.updateClient(client);
             }
@@ -106,22 +118,25 @@ void callbackDispatcher() {
   });
 }
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //final int helloAlarmID = 0;
   //await AndroidAlarmManager.initialize();
   //await AndroidAlarmManager.periodic(const Duration(seconds: 10), helloAlarmID, printHello, wakeup: true,);
-  Workmanager.initialize(
+  await Workmanager.initialize(
       callbackDispatcher, // The top level function, aka callbackDispatcher
-      isInDebugMode: false// If enabled it will post a notification whenever the task is running. Handy for debugging tasks
+      isInDebugMode:
+          false // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
+      );
+  await Workmanager.registerPeriodicTask(
+    "1",
+    "checkDatabase",
+    frequency: Duration(minutes: 15),
   );
-  Workmanager.registerPeriodicTask("1", "checkDatabase",frequency: Duration(minutes: 15),);
   runApp(MyApp());
-
 }
 
 class MyApp extends StatelessWidget {
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -130,32 +145,30 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
     return MaterialApp(
-      title: "8 Armas Payment",
-      theme: ThemeData(
-        primaryColor: Color(0xff202225),
-        canvasColor: Color(0xffCCD4E0),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage()
-    );
+        title: "8 Armas Payment",
+        theme: ThemeData(
+          primaryColor: Color(0xff202225),
+          canvasColor: Color(0xffCCD4E0),
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: MyHomePage());
   }
 }
 
 class MyHomePage extends StatefulWidget {
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final StreamController<bool> _verificationNotifier = StreamController<bool>.broadcast();
+  final StreamController<bool> _verificationNotifier =
+      StreamController<bool>.broadcast();
   bool isAuthenticated = false;
   bool _canCheckBiometrics;
   final LocalAuthentication auth = LocalAuthentication();
   var prefs;
   String pin;
   BuildContext context2;
-
 
   @override
   void initState() {
@@ -172,116 +185,115 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text("8 Armas Payment"),
       ),
       body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        color: Color(0xff292b2f),
-        margin: const EdgeInsets.only(),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              height: 200,
-              width: 200,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/icons/"
-                      "logo_2.png"),
+          height: double.infinity,
+          width: double.infinity,
+          color: Color(0xff292b2f),
+          margin: const EdgeInsets.only(),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  height: 200,
+                  width: 200,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/icons/"
+                          "logo_2.png"),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Container(margin: const EdgeInsets.only(top: 100.0),
-                child:FloatingActionButton.extended(
-                  onPressed: login,
-                  label: Text("Ingresar"),
-                  icon: Icon(Icons.fingerprint),
-                  backgroundColor: Color(0xff202225),
-                )
-            )
-          ]
-        )
-      ),
+                Container(
+                    margin: const EdgeInsets.only(top: 100.0),
+                    child: FloatingActionButton.extended(
+                      onPressed: login,
+                      label: Text("Ingresar"),
+                      icon: Icon(Icons.fingerprint),
+                      backgroundColor: Color(0xff202225),
+                    ))
+              ])),
     );
   }
 
-
-
-
   void login() {
-    Workmanager.registerOneOffTask("2", "checkDatabase",);
+    Workmanager.registerOneOffTask(
+      "2",
+      "checkDatabase",
+    );
 
-    if(_canCheckBiometrics) {
+    if (_canCheckBiometrics) {
       _authenticate();
-    } else{
-        verifyPin();
+    } else {
+      verifyPin();
     }
-
   }
 
   void verifyPin() async {
     prefs = await SharedPreferences.getInstance();
     pin = prefs.getString("pin") ?? "0";
     print("PIN: $pin");
-    if(pin=="0") {
+    if (pin == "0") {
       await inputDialog(context2);
-    }
-    else{
+    } else {
       dialogPin();
     }
   }
 
-void dialogPin(){
-  _showLockScreen(
-    context2,
-    opaque: false,
-    cancelButton: Text(
-      "Cancelar",
-      style: const TextStyle(fontSize: 16, color: Colors.white),
-      semanticsLabel: "Cancelar",
-    ),
-  );
-}
+  void dialogPin() {
+    _showLockScreen(
+      context2,
+      opaque: false,
+      cancelButton: Text(
+        "Cancelar",
+        style: const TextStyle(fontSize: 16, color: Colors.white),
+        semanticsLabel: "Cancelar",
+      ),
+    );
+  }
 
-  Future<void> inputDialog(BuildContext context){
+  Future<void> inputDialog(BuildContext context) {
     String new_pin;
     var isPinValid = false;
-    var regExp = RegExp(r"^[0-9]{6}$",);
+    var regExp = RegExp(
+      r"^[0-9]{6}$",
+    );
 
     return showDialog<String>(
       context: context,
-      barrierDismissible: false, // dialog is dismissible with a tap on the barrier
+      barrierDismissible:
+          false, // dialog is dismissible with a tap on the barrier
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Registre su pin de seguridad"),
           content: Row(
             children: <Widget>[
               Expanded(
-                  child:TextField(
-                    autofocus: true,
-                    obscureText: true,
-                    maxLength: 6,
-                    keyboardType: TextInputType.number,
-                    onChanged: (value) {
-                      if(regExp.hasMatch(value)){
-                        isPinValid= true;
-                        new_pin=value;
-                      } else {
-                        isPinValid = false;
-                      }
-                    },
-                    decoration: InputDecoration(
-                        labelText: "El pin debe tener 6 dígitos",
-                    ),
-                  ))
+                  child: TextField(
+                autofocus: true,
+                obscureText: true,
+                maxLength: 6,
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  if (regExp.hasMatch(value)) {
+                    isPinValid = true;
+                    new_pin = value;
+                  } else {
+                    isPinValid = false;
+                  }
+                },
+                decoration: InputDecoration(
+                  labelText: "El pin debe tener 6 dígitos",
+                ),
+              ))
             ],
           ),
           actions: <Widget>[
             FlatButton(
               child: Text("Crear PIN"),
               onPressed: () {
-                if(isPinValid) {
+                if (isPinValid) {
                   prefs.setString("pin", new_pin);
                   Navigator.pop(context);
-                  pin=new_pin;
+                  pin = new_pin;
                   dialogPin();
                 }
               },
@@ -298,18 +310,18 @@ void dialogPin(){
     );
   }
 
-
- void _showLockScreen(BuildContext context,
-      { bool opaque,
-        CircleUIConfig circleUIConfig,
-        KeyboardUIConfig keyboardUIConfig,
-        Widget cancelButton,
-        List<String> digits}) {
+  void _showLockScreen(BuildContext context,
+      {bool opaque,
+      CircleUIConfig circleUIConfig,
+      KeyboardUIConfig keyboardUIConfig,
+      Widget cancelButton,
+      List<String> digits}) {
     Navigator.push(
         context,
         PageRouteBuilder(
           opaque: opaque,
-          pageBuilder: (context, animation, secondaryAnimation) => PasscodeScreen(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              PasscodeScreen(
             title: Text(
               "Ingrese código de acceso",
               textAlign: TextAlign.center,
@@ -329,7 +341,6 @@ void dialogPin(){
             cancelCallback: _onPasscodeCancelled,
             digits: digits,
           ),
-
         ));
   }
 
@@ -359,10 +370,12 @@ void dialogPin(){
     }
     if (!mounted) return;
 
-    setState(() {
-    });
-    if(authenticated){
-      await Navigator.push(context2, MaterialPageRoute(builder: (BuildContext context) => ClientManagerMainScreen()));
+    setState(() {});
+    if (authenticated) {
+      await Navigator.push(
+          context2,
+          MaterialPageRoute(
+              builder: (BuildContext context) => ClientManagerMainScreen()));
     }
   }
 
@@ -388,6 +401,4 @@ void dialogPin(){
     _verificationNotifier.close();
     super.dispose();
   }
-
 }
-
